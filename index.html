@@ -314,9 +314,9 @@ function showPage(id) {
 }
 
 function goHome() {
-  const levelMap = { kinder: 'KINDER', kids: 'KIDS', junior: 'JUNIOR', times: 'TIMES' };
+  const levelMap = { kinder: 'LEVEL 1', kids: 'LEVEL 2', junior: 'LEVEL 3', times: 'LEVEL 4' };
   const levelFilter = levelMap[currentGrade] || 'LEVEL 2';
-  const filtered = articles.filter(a => (a.category || '').toUpperCase() === levelFilter.toUpperCase());
+  const filtered = articles.filter(a => (a.level || '').toUpperCase() === levelFilter.toUpperCase());
   const latest = issues[0];
   if (latest) updateIssueBtns(latest.id);
   renderFeatured(filtered[0]);
@@ -370,6 +370,19 @@ function goIssue(issueId) {
   prevPage = currentPage;
   currentIssue = issueId;
   updateIssueBtns(issueId);
+  // 호수에 해당하는 매체 자동 감지 → 탭 변경
+  const issueArticle = articles.find(a => a.issue === issueId);
+  if (issueArticle && issueArticle.category) {
+    const catMap = { KINDER: 'kinder', KIDS: 'kids', JUNIOR: 'junior', TIMES: 'times' };
+    const grade = catMap[issueArticle.category.toUpperCase()];
+    if (grade && grade !== currentGrade) {
+      currentGrade = grade;
+      document.querySelectorAll('.grade-tabs a').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + grade).classList.add('active');
+      const labels = { kinder: 'Kinder Edition', kids: 'Kids Edition', junior: 'Junior Edition', times: 'Times Edition' };
+      document.getElementById('edition-label').textContent = labels[grade];
+    }
+  }
   const info = issues.find(i => i.id === issueId) || { title: issueId + '호', date: '' };
   document.getElementById('issue-title').textContent = info.title;
   document.getElementById('issue-date').textContent = info.date;
