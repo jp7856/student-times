@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Times</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1a2b4a; --red: #c0392b; --light-bg: #f5f0e8;
+  --white: #ffffff; --gray: #6b7280; --light-gray: #e8e2d9;
+  --text: #1e1e1e; --text-muted: #555;
+}
+body { font-family: 'Source Serif 4', Georgia, serif; background: var(--light-bg); color: var(--text); }
+a { text-decoration: none; color: inherit; }
+.page { display: none; }
+.page.active { display: block; }
+
+.top-bar { background: var(--navy); color: #cdd8e8; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; padding: 6px 0; text-align: center; letter-spacing: 0.5px; }
+
+header { background: var(--white); border-bottom: 3px double var(--navy); }
+.header-inner { max-width: 1080px; margin: 0 auto; padding: 16px 20px 0; }
+.header-meta { display: flex; justify-content: space-between; align-items: center; font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--gray); border-bottom: 1px solid var(--light-gray); padding-bottom: 8px; margin-bottom: 10px; }
+.masthead { text-align: center; padding: 8px 0 12px; cursor: pointer; }
+.masthead h1 { font-family: 'Playfair Display', serif; font-size: clamp(36px, 6vw, 72px); font-weight: 900; color: var(--navy); letter-spacing: -1px; line-height: 1; }
+.masthead .tagline { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--gray); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+.grade-tabs { background: var(--navy); display: flex; justify-content: center; }
+.grade-tabs a { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 700; color: #8fa5c5; padding: 10px 32px; border-right: 1px solid #2e4268; transition: all 0.2s; letter-spacing: 0.5px; cursor: pointer; }
+.grade-tabs a:last-child { border-right: none; }
+.grade-tabs a.active, .grade-tabs a:hover { background: var(--red); color: #fff; }
+
+.issue-bar { background: var(--white); border-bottom: 1px solid var(--light-gray); padding: 8px 0; }
+.issue-bar-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.issue-label { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--gray); font-weight: 700; margin-right: 4px; }
+.issue-btn { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; padding: 3px 10px; border: 1px solid var(--light-gray); border-radius: 2px; background: var(--white); color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.issue-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.issue-btn:hover:not(.active) { border-color: var(--navy); color: var(--navy); }
+
+.main-wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px; }
+.content-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; }
+
+.featured { background: var(--white); border: 1px solid var(--light-gray); margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; cursor: pointer; transition: box-shadow 0.2s; }
+.featured:hover { box-shadow: 0 4px 20px rgba(26,43,74,0.12); }
+.featured-img .img-placeholder { width: 100%; min-height: 260px; background: linear-gradient(160deg, #d6e4f0 0%, #b8cedd 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #7a9ab5; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; gap: 8px; }
+.img-icon { width: 40px; height: 40px; opacity: 0.5; }
+.featured-body { padding: 24px 22px; display: flex; flex-direction: column; justify-content: center; }
+.issue-tag { display: inline-block; background: var(--red); color: #fff; font-family: 'Noto Sans KR', sans-serif; font-size: 10px; font-weight: 700; padding: 2px 8px; letter-spacing: 0.5px; margin-bottom: 10px; }
+.featured-body h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 10px; }
+.featured-body .byline { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--red); font-weight: 700; margin-bottom: 8px; }
+.featured-body p { font-size: 14px; line-height: 1.7; color: var(--text-muted); }
+.read-more { display: inline-block; margin-top: 14px; font-family: 'Noto Sans KR', sans-serif; font-size: 11px; font-weight: 700; color: var(--navy); border-bottom: 1.5px solid var(--navy); padding-bottom: 1px; }
+
+.article-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.article-card { background: var(--white); border: 1px solid var(--light-gray); overflow: hidden; cursor: pointer; transition: box-shadow 0.2s; }
+.article-card:hover { box-shadow: 0 4px 16px rgba(26,43,74,0.1); }
+.card-img { height: 140px; background: linear-gradient(160deg, #e8eef4, #d0dce6); display: flex; align-items: center; justify-content: center; color: #8aa0b5; }
+.card-body { padding: 14px 14px 16px; }
+.card-issue { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--gray); margin-bottom: 5px; }
+.article-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.35; margin-bottom: 6px; }
+.card-byline { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--red); font-weight: 700; margin-bottom: 6px; }
+.article-card p { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.sidebar { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-box { background: var(--white); border: 1px solid var(--light-gray); overflow: hidden; }
+.box-title { background: var(--navy); color: #fff; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 14px; letter-spacing: 1px; text-transform: uppercase; }
+.box-content { padding: 14px; }
+.archive-list { list-style: none; }
+.archive-list li { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--light-gray); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; cursor: pointer; transition: color 0.15s; }
+.archive-list li:last-child { border-bottom: none; }
+.archive-list li:hover { color: var(--red); }
+.iss-num { font-weight: 700; color: var(--navy); }
+.iss-date { color: var(--gray); font-size: 11px; }
+.year-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.year-btn { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; padding: 3px 10px; border: 1px solid var(--light-gray); background: var(--white); cursor: pointer; color: var(--text-muted); border-radius: 2px; transition: all 0.15s; }
+.year-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.month-btn { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; padding: 5px 4px; border: 1px solid var(--light-gray); background: var(--white); cursor: pointer; color: var(--gray); text-align: center; border-radius: 2px; transition: all 0.15s; }
+.month-btn:hover, .month-btn.has-issue { border-color: var(--navy); color: var(--navy); font-weight: 700; }
+
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--navy); border: 1px solid var(--light-gray); background: var(--white); padding: 6px 14px; border-radius: 2px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
+.back-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+.issue-page-header { margin-bottom: 20px; }
+.issue-page-header h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 4px; }
+.issue-page-header p { font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--gray); }
+.issue-list-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.issue-list-card { background: var(--white); border: 1px solid var(--light-gray); display: flex; gap: 14px; padding: 14px; cursor: pointer; transition: box-shadow 0.2s; align-items: flex-start; }
+.issue-list-card:hover { box-shadow: 0 3px 14px rgba(26,43,74,0.1); }
+.issue-list-thumb { width: 80px; min-width: 80px; height: 70px; background: linear-gradient(160deg, #e8eef4, #d0dce6); display: flex; align-items: center; justify-content: center; color: #8aa0b5; flex-shrink: 0; }
+.issue-list-body .tag { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--gray); margin-bottom: 4px; }
+.issue-list-body h4 { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--navy); line-height: 1.3; margin-bottom: 4px; }
+.issue-list-body .ibyline { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--red); font-weight: 700; }
+
+.article-detail { max-width: 1080px; margin: 0 auto; padding: 24px 20px; }
+.article-detail-inner { display: grid; grid-template-columns: 1fr 300px; gap: 28px; }
+.article-detail-content { background: var(--white); border: 1px solid var(--light-gray); padding: 32px 36px; }
+.detail-tag { display: inline-block; background: var(--red); color: #fff; font-family: 'Noto Sans KR', sans-serif; font-size: 10px; font-weight: 700; padding: 2px 8px; letter-spacing: 0.5px; margin-bottom: 14px; }
+.article-detail-content h1 { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 12px; }
+.detail-byline { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--red); font-weight: 700; margin-bottom: 6px; }
+.detail-date { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--gray); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--light-gray); }
+.detail-hero { width: 100%; height: 280px; background: linear-gradient(160deg, #d6e4f0 0%, #b8cedd 100%); display: flex; align-items: center; justify-content: center; color: #7a9ab5; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; margin-bottom: 24px; }
+.detail-body { font-size: 16px; line-height: 1.9; color: var(--text-muted); }
+.detail-body p { margin-bottom: 1.2em; }
+
+/* 빈 상태 안내 */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gray); font-family: 'Noto Sans KR', sans-serif; }
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 14px; line-height: 1.8; }
+
+footer { background: var(--navy); color: #8fa5c5; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; text-align: center; padding: 24px 20px; margin-top: 32px; line-height: 2; }
+footer .footer-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #fff; margin-bottom: 6px; }
+
+@media (max-width: 768px) {
+  .content-layout, .article-detail-inner { grid-template-columns: 1fr; }
+  .featured { grid-template-columns: 1fr; }
+  .article-grid, .issue-list-grid { grid-template-columns: 1fr; }
+  .masthead h1 { font-size: 40px; }
+  .article-detail-content { padding: 20px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">Student Times · Kinder · Kids · Junior · Times</div>
+<header>
+  <div class="header-inner">
+    <div class="header-meta">
+      <span id="edition-label">Kids Edition</span>
+      <span id="vol-label">Vol. 1, No. 1</span>
+      <span>Published Weekly</span>
+    </div>
+    <div class="masthead" onclick="goHome()">
+      <h1>Student Times</h1>
+      <p class="tagline">Written by Students · For Students · In English</p>
+    </div>
+  </div>
+  <nav class="grade-tabs">
+    <a onclick="switchGrade('kinder')" id="tab-kinder">Kinder</a>
+    <a onclick="switchGrade('kids')" id="tab-kids" class="active">Kids</a>
+    <a onclick="switchGrade('junior')" id="tab-junior">Junior</a>
+    <a onclick="switchGrade('times')" id="tab-times">Times</a>
+  </nav>
+</header>
+
+<div class="issue-bar">
+  <div class="issue-bar-inner">
+    <span class="issue-label">호수 선택 :</span>
+    <div id="issue-btn-wrap"></div>
+  </div>
+</div>
+
+<!-- PAGE: HOME -->
+<div id="page-home" class="page active">
+  <div class="main-wrap">
+    <div class="content-layout">
+      <div>
+        <div id="featured-wrap"></div>
+        <div class="article-grid" id="article-grid"></div>
+      </div>
+      <aside class="sidebar">
+        <div class="sidebar-box">
+          <div class="box-title">이전 호 목록</div>
+          <div class="box-content">
+            <ul class="archive-list" id="sidebar-archive"></ul>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <div class="box-title">호수 아카이브</div>
+          <div class="box-content">
+            <div class="year-tabs" id="year-tabs"></div>
+            <div class="month-grid" id="month-grid"></div>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <div class="box-title">About This Paper</div>
+          <div class="box-content" style="font-size:13px;line-height:1.8;color:var(--text-muted);font-family:'Noto Sans KR',sans-serif;">
+            <p>Student Times는 학생 기자들이 직접 취재하고 영어로 쓰는 학생 신문입니다.</p><br>
+            <p>매주 발행되며, 학교 소식·지역 이슈·문화·과학 등 다양한 주제를 다룹니다.</p><br>
+            <p style="color:var(--red);font-weight:700;">기사 투고 문의: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d8bdbcb1acb7aa98abacadbcbdb6acacb1b5bdabf6b3aa">[email&#160;protected]</a></p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ISSUE LIST -->
+<div id="page-issue" class="page">
+  <div class="main-wrap">
+    <button class="back-btn" onclick="goHome()">← 메인으로 돌아가기</button>
+    <div class="issue-page-header">
+      <h2 id="issue-title"></h2>
+      <p id="issue-date"></p>
+    </div>
+    <div class="issue-list-grid" id="issue-list-grid"></div>
+  </div>
+</div>
+
+<!-- PAGE: ARTICLE DETAIL -->
+<div id="page-article" class="page">
+  <div class="article-detail">
+    <div class="article-detail-inner">
+      <div class="article-detail-content">
+        <button class="back-btn" id="article-back-btn" onclick="goBack()">← 목록으로 돌아가기</button>
+        <span class="detail-tag" id="detail-tag"></span>
+        <h1 id="detail-title"></h1>
+        <p class="detail-byline" id="detail-byline"></p>
+        <p class="detail-date" id="detail-date"></p>
+        <div class="detail-hero">기사 이미지</div>
+        <div class="detail-body" id="detail-body"></div>
+      </div>
+      <aside class="sidebar">
+        <div class="sidebar-box">
+          <div class="box-title">같은 호 다른 기사</div>
+          <div class="box-content" id="related-articles"></div>
+        </div>
+        <div class="sidebar-box">
+          <div class="box-title">이전 호 목록</div>
+          <div class="box-content">
+            <ul class="archive-list" id="detail-archive"></ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-title">Student Times</div>
+  <div>Written by Students · For Students · In English</div>
+  <div style="margin-top:6px;font-size:11px;color:#5a7498;">Copyright © 2026 Student Times. All rights reserved.</div>
+</footer>
+
+<script>
+// ── CSV 공개 URL 방식 (API 키 불필요) ──
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzK-H6cBSUBEA7FGbMOoleEzFHfRz1Z0eTNLInjLZGqIwu2KgB5KI2wVf-fHXLIxaW7m4IkBbPedMp/pub?gid=0&single=true&output=csv';
+
+let articles = [];
+let issues = [];
+let currentGrade = 'kids';
+
+// CSV 텍스트 파싱 (쉼표/따옴표 처리)
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+  return lines.slice(1).map((line, idx) => {
+    const values = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQuote = !inQuote; }
+      else if (ch === ',' && !inQuote) { values.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    values.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (values[i] || '').replace(/^"|"$/g, '').trim());
+    obj.id = idx;
+    // issue가 날짜 형식("2026. 4. 20.")이면 그대로 사용, 없으면 date로 생성
+    const issueSrc = obj.issue || obj.date || '';
+    const parts = issueSrc.split('.').map(s => s.trim()).filter(s => s);
+    const year = parts[0] || '2026';
+    const month = parts[1] || '1';
+    if (!obj.issue) {
+      obj.issue = year + '-' + month.padStart(2, '0');
+      obj.issueLabel = year + '년 ' + parseInt(month) + '월호';
+    }
+    obj._year = year;
+    obj._month = parseInt(month);
+    return obj;
+  }).filter(a => a.title); // 빈 행 제거
+}
+
+async function loadArticles() {
+  try {
+    const res = await fetch(CSV_URL);
+    if (!res.ok) throw new Error('fetch 실패');
+    const text = await res.text();
+    articles = parseCSV(text);
+    const issueMap = {};
+    articles.forEach(a => {
+      if (a.issue && !issueMap[a.issue]) {
+        issueMap[a.issue] = {
+          id: a.issue,
+          label: a.issueLabel || a.issue,
+          title: (a.issueLabel || a.issue) + ' 기사 목록',
+          date: '발행일: ' + (a.date || ''),
+          year: a._year || '2026',
+          month: a._month || 1
+        };
+      }
+    });
+    issues = Object.values(issueMap);
+  } catch(e) {
+    console.error('데이터 로드 실패:', e);
+    document.getElementById('article-grid').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">⚠️</div><p>데이터를 불러오지 못했습니다.<br>잠시 후 새로고침 해주세요.</p></div>';
+  }
+}
+
+// ══════════════════════════════════════
+// 이하 로직 — 수정 불필요
+// ══════════════════════════════════════
+let currentPage = 'home';
+let prevPage = 'home';
+let currentIssue = issues[0] ? issues[0].id : '';
+
+const svgImg = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.35"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  currentPage = id;
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  const levelMap = { kinder: 'LEVEL 1', kids: 'LEVEL 2', junior: 'LEVEL 3', times: 'LEVEL 4' };
+  const levelFilter = levelMap[currentGrade] || 'LEVEL 2';
+  const filtered = articles.filter(a => (a.level || '').toUpperCase() === levelFilter.toUpperCase());
+  const latest = issues[0];
+  if (latest) updateIssueBtns(latest.id);
+  renderFeatured(filtered[0]);
+  renderGrid(filtered.slice(1));
+  showPage('home');
+}
+
+function renderFeatured(a) {
+  const wrap = document.getElementById('featured-wrap');
+  if (!a) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📰</div><p>이 호의 기사를 등록해 주세요.</p></div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="featured" onclick="goArticle(${a.id})">
+      <div class="featured-img"><div class="img-placeholder">
+        <svg class="img-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>대표 기사 이미지</span>
+      </div></div>
+      <div class="featured-body">
+        <span class="issue-tag">${a.issueLabel}</span>
+        <h2>${a.title}</h2>
+        <p class="byline">${a.byline}</p>
+        <p>${a.preview}</p>
+        <span class="read-more">Read Full Article →</span>
+      </div>
+    </div>`;
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById('article-grid');
+  if (!list.length) { grid.innerHTML = ''; return; }
+  grid.innerHTML = list.map(a => `
+    <div class="article-card" onclick="goArticle(${a.id})">
+      <div class="card-img">${svgImg}</div>
+      <div class="card-body">
+        <p class="card-issue">${a.issueLabel}</p>
+        <h3>${a.title}</h3>
+        <p class="card-byline">${a.byline}</p>
+        <p>${a.preview}</p>
+      </div>
+    </div>`).join('');
+}
+
+function renderEmpty(id, msg) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = `<div class="empty-state"><div class="empty-icon">📰</div><p>${msg || '기사를 등록해 주세요.'}</p></div>`;
+}
+
+function goIssue(issueId) {
+  prevPage = currentPage;
+  currentIssue = issueId;
+  updateIssueBtns(issueId);
+  const info = issues.find(i => i.id === issueId) || { title: issueId + '호', date: '' };
+  document.getElementById('issue-title').textContent = info.title;
+  document.getElementById('issue-date').textContent = info.date;
+  const list = articles.filter(a => a.issue === issueId);
+  document.getElementById('issue-list-grid').innerHTML = list.length
+    ? list.map(a => `
+        <div class="issue-list-card" onclick="goArticle(${a.id})">
+          <div class="issue-list-thumb">${svgImg}</div>
+          <div class="issue-list-body">
+            <p class="tag">${a.issueLabel}</p>
+            <h4>${a.title}</h4>
+            <p class="ibyline">${a.byline}</p>
+          </div>
+        </div>`).join('')
+    : `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📰</div><p>이 호의 기사를 등록해 주세요.</p></div>`;
+  showPage('issue');
+}
+
+function goArticle(id) {
+  const a = articles.find(x => x.id === id);
+  if (!a) return;
+  prevPage = currentPage;
+  document.getElementById('detail-tag').textContent = a.issueLabel;
+  document.getElementById('detail-title').textContent = a.title;
+  document.getElementById('detail-byline').textContent = a.byline;
+  document.getElementById('detail-date').textContent = '발행일: ' + a.date;
+  document.getElementById('detail-body').innerHTML = a.body;
+  const related = articles.filter(x => x.issue === a.issue && x.id !== id).slice(0, 4);
+  document.getElementById('related-articles').innerHTML = related.length
+    ? related.map(r => `
+        <div onclick="goArticle(${r.id})" style="padding:8px 0;border-bottom:1px solid var(--light-gray);cursor:pointer;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='inherit'">
+          <p style="font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--gray);margin-bottom:3px;">${r.issueLabel}</p>
+          <p style="font-family:'Playfair Display',serif;font-size:13px;line-height:1.35;">${r.title}</p>
+        </div>`).join('')
+    : '<p style="font-family:\'Noto Sans KR\',sans-serif;font-size:13px;color:var(--gray);">없음</p>';
+  document.getElementById('article-back-btn').textContent =
+    prevPage === 'issue' ? '← 목록으로 돌아가기' : '← 메인으로 돌아가기';
+  renderDetailArchive();
+  showPage('article');
+}
+
+function goBack() {
+  if (prevPage === 'issue') goIssue(currentIssue);
+  else goHome();
+}
+
+function switchGrade(grade) {
+  currentGrade = grade;
+  document.querySelectorAll('.grade-tabs a').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + grade).classList.add('active');
+  const labels = { kinder: 'Kinder Edition', kids: 'Kids Edition', junior: 'Junior Edition', times: 'Times Edition' };
+  document.getElementById('edition-label').textContent = labels[grade];
+  goHome();
+}
+
+function updateIssueBtns(activeId) {
+  document.querySelectorAll('.issue-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.id === activeId);
+  });
+}
+
+function switchYear(el) {
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderMonthGrid(el.dataset.year);
+}
+
+// ── 초기 렌더링 ──
+async function init() {
+  // 로딩 표시
+  document.getElementById('article-grid').innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>기사를 불러오는 중...</p></div>';
+  await loadArticles();
+  // 호수 버튼
+  const btnWrap = document.getElementById('issue-btn-wrap');
+  btnWrap.innerHTML = issues.map(i =>
+    `<button class="issue-btn" data-id="${i.id}" onclick="goIssue('${i.id}')">${i.label}</button>`
+  ).join('');
+  if (issues[0]) {
+    document.querySelector(`[data-id="${issues[0].id}"]`)?.classList.add('active');
+  }
+
+  // 사이드바 이전 호
+  const archive = document.getElementById('sidebar-archive');
+  archive.innerHTML = issues.map(i =>
+    `<li onclick="goIssue('${i.id}')"><span class="iss-num">${i.id}호</span><span class="iss-date">${i.date.replace('발행일: ', '')}</span></li>`
+  ).join('') || '<li style="color:var(--gray);font-family:\'Noto Sans KR\',sans-serif;">등록된 호수 없음</li>';
+
+  // 연도 탭
+  const years = [...new Set(issues.map(i => i.year))].sort().reverse();
+  const yearWrap = document.getElementById('year-tabs');
+  yearWrap.innerHTML = years.map((y, idx) =>
+    `<button class="year-btn${idx === 0 ? ' active' : ''}" data-year="${y}" onclick="switchYear(this)">${y}년</button>`
+  ).join('') || '<span style="font-family:\'Noto Sans KR\',sans-serif;font-size:12px;color:var(--gray);">없음</span>';
+  if (years[0]) renderMonthGrid(years[0]);
+
+  goHome();
+}
+
+function renderMonthGrid(year) {
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const monthsWithIssue = issues.filter(i => i.year === year).map(i => i.month);
+  document.getElementById('month-grid').innerHTML = monthNames.map((m, idx) => {
+    const month = idx + 1;
+    const issue = issues.find(i => i.year === year && i.month === month);
+    return `<button class="month-btn${monthsWithIssue.includes(month) ? ' has-issue' : ''}"
+      ${issue ? `onclick="goIssue('${issue.id}')"` : 'disabled'}>${m}</button>`;
+  }).join('');
+}
+
+function renderDetailArchive() {
+  document.getElementById('detail-archive').innerHTM
