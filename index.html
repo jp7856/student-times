@@ -314,9 +314,9 @@ function showPage(id) {
 }
 
 function goHome() {
-  const levelMap = { kinder: 'LEVEL 4', kids: 'LEVEL 2', junior: 'LEVEL 3', times: 'LEVEL 1' };
-  const levelFilter = levelMap[currentGrade] || 'LEVEL 2';
-  const filtered = articles.filter(a => (a.level || '').toUpperCase() === levelFilter.toUpperCase());
+  const levelMap = { kinder: 'KINDER', kids: 'KIDS', junior: 'JUNIOR', times: 'TIMES' };
+  const levelFilter = levelMap[currentGrade] || 'KIDS';
+  const filtered = articles.filter(a => (a.category || '').toUpperCase() === levelFilter.toUpperCase());
   const latest = issues[0];
   if (latest) updateIssueBtns(latest.id);
   renderFeatured(filtered[0]);
