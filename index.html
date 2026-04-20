@@ -480,4 +480,14 @@ function renderMonthGrid(year) {
 }
 
 function renderDetailArchive() {
-  document.getElementById('detail-archive').innerHTM
+  document.getElementById('detail-archive').innerHTML = issues.map(i =>
+    '<li onclick="goIssue(\'' + i.id + '\')">' +
+    '<span class="iss-num">' + i.label + '</span>' +
+    '<span class="iss-date">' + i.date.replace('발행일: ', '') + '</span></li>'
+  ).join('') || '<li style="color:var(--gray)">등록된 호수 없음</li>';
+}
+
+init();
+</script>
+</body>
+</html>
