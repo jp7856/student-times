@@ -315,7 +315,7 @@ function showPage(id) {
 
 function goHome() {
   const levelMap = { kinder: 'KINDER', kids: 'KIDS', junior: 'JUNIOR', times: 'TIMES' };
-  const levelFilter = levelMap[currentGrade] || 'KIDS';
+  const levelFilter = levelMap[currentGrade] || 'LEVEL 2';
   const filtered = articles.filter(a => (a.category || '').toUpperCase() === levelFilter.toUpperCase());
   const latest = issues[0];
   if (latest) updateIssueBtns(latest.id);
