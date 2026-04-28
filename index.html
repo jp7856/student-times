@@ -209,6 +209,9 @@ let currentIssue = '';
 
 const svgImg = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.35"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
 
+// category 기준으로 필터 (level 무시)
+const CAT_MAP = {kinder:'KINDER', kids:'KIDS', junior:'JUNIOR', times:'TIMES'};
+
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
@@ -225,6 +228,10 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h, i) => obj[h] = (values[i] || '').replace(/^"|"$/g, '').trim());
     obj.id = 'csv-' + idx;
+    // issue 숫자면 호수 레이블 생성
+    if (obj.issue && !obj.issueLabel) {
+      obj.issueLabel = obj.issue + '호';
+    }
     if (!obj.issue && obj.date) {
       const parts = obj.date.split('.').map(s => s.trim()).filter(s => s);
       const year = parts[0] || '2026';
@@ -241,20 +248,26 @@ async function loadArticles() {
     const res = await fetch(CSV_URL);
     const text = await res.text();
     const csvData = parseCSV(text);
-    articles = [...KINDER_ARTICLES, ...csvData];
+    // CSV에서 KINDER 제외 (하드코딩 데이터 사용)
+    const nonKinder = csvData.filter(a => (a.category||'').toUpperCase() !== 'KINDER');
+    articles = [...KINDER_ARTICLES, ...nonKinder];
   } catch(e) {
     articles = [...KINDER_ARTICLES];
   }
+
+  // issue 목록 생성 (category별)
   const issueMap = {};
   articles.forEach(a => {
-    if (a.issue && !issueMap[a.issue]) {
-      issueMap[a.issue] = {
-        id: a.issue,
-        label: a.issueLabel || a.issue,
-        title: (a.issueLabel || a.issue) + ' 기사 목록',
+    const key = a.issue;
+    if (key && !issueMap[key]) {
+      issueMap[key] = {
+        id: key,
+        label: a.issueLabel || key,
+        title: (a.issueLabel || key) + ' 기사 목록',
         date: '발행일: ' + (a.date || ''),
         year: (a.date || '2026').substring(0, 4),
-        month: parseInt((a.date || '2026.01').split('.')[1]) || 1
+        month: parseInt((a.date || '2026.01').split('.')[1]) || 1,
+        category: (a.category || '').toUpperCase()
       };
     }
   });
@@ -268,20 +281,13 @@ function showPage(id) {
   window.scrollTo(0, 0);
 }
 
-function getGradeCat(g) {
-  return {kinder:'KINDER', kids:'KIDS', junior:'JUNIOR', times:'TIMES'}[g] || 'KIDS';
-}
-
 function goHome() {
-  const levelMap = {kinder:'LEVEL 1', kids:'LEVEL 2', junior:'LEVEL 3', times:'LEVEL 4'};
-  const levelFilter = levelMap[currentGrade];
-  const filtered = articles.filter(a => (a.level||'').toUpperCase() === levelFilter);
+  const cat = CAT_MAP[currentGrade];
+  // category 기준으로 필터
+  const filtered = articles.filter(a => (a.category||'').toUpperCase() === cat);
 
-  const cat = getGradeCat(currentGrade);
-  const gradeIssues = issues.filter(i => {
-    const first = articles.find(a => a.issue === i.id);
-    return first && (first.category||'').toUpperCase() === cat;
-  });
+  // 해당 grade의 issue 목록
+  const gradeIssues = issues.filter(i => i.category === cat);
 
   const btnWrap = document.getElementById('issue-btn-wrap');
   btnWrap.innerHTML = gradeIssues.map(i =>
@@ -304,10 +310,10 @@ function renderFeatured(a) {
   wrap.innerHTML = '<div class="featured" onclick="goArticle('' + a.id + '')">' +
     '<div class="featured-img"><div class="img-placeholder">' + svgImg + '<span>대표 기사 이미지</span></div></div>' +
     '<div class="featured-body">' +
-    '<span class="issue-tag">' + a.issueLabel + '</span>' +
+    '<span class="issue-tag">' + (a.issueLabel||'') + '</span>' +
     '<h2>' + a.title + '</h2>' +
-    '<p class="byline">' + a.byline + '</p>' +
-    '<p>' + a.preview + '</p>' +
+    '<p class="byline">' + (a.byline||'') + '</p>' +
+    '<p>' + (a.preview||'') + '</p>' +
     '<span class="read-more">Read Full Article →</span>' +
     '</div></div>';
 }
@@ -319,9 +325,9 @@ function renderGrid(list) {
     '<div class="article-card" onclick="goArticle('' + a.id + '')">' +
     '<div class="card-img">' + svgImg + '</div>' +
     '<div class="card-body">' +
-    '<p class="card-issue">' + a.byline + '</p>' +
+    '<p class="card-issue">' + (a.byline||'') + '</p>' +
     '<h3>' + a.title + '</h3>' +
-    '<p>' + a.preview + '</p>' +
+    '<p>' + (a.preview||'') + '</p>' +
     '</div></div>'
   ).join('');
 }
@@ -338,7 +344,7 @@ function goIssue(issueId) {
     ? list.map(a =>
         '<div class="issue-list-card" onclick="goArticle('' + a.id + '')">' +
         '<div class="issue-list-thumb">' + svgImg + '</div>' +
-        '<div class="issue-list-body"><p class="tag">' + a.byline + '</p><h4>' + a.title + '</h4></div>' +
+        '<div class="issue-list-body"><p class="tag">' + (a.byline||'') + '</p><h4>' + a.title + '</h4></div>' +
         '</div>'
       ).join('')
     : '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📰</div><p>기사를 등록해 주세요.</p></div>';
@@ -349,16 +355,16 @@ function goArticle(id) {
   const a = articles.find(x => x.id === id);
   if (!a) return;
   prevPage = currentPage;
-  document.getElementById('detail-tag').textContent = a.issueLabel;
+  document.getElementById('detail-tag').textContent = a.issueLabel||'';
   document.getElementById('detail-title').textContent = a.title;
-  document.getElementById('detail-byline').textContent = a.byline;
-  document.getElementById('detail-date').textContent = '발행일: ' + a.date;
-  document.getElementById('detail-body').innerHTML = a.body;
+  document.getElementById('detail-byline').textContent = a.byline||'';
+  document.getElementById('detail-date').textContent = '발행일: ' + (a.date||'');
+  document.getElementById('detail-body').innerHTML = a.body||'';
   const related = articles.filter(x => x.issue === a.issue && x.id !== id).slice(0, 4);
   document.getElementById('related-articles').innerHTML = related.length
     ? related.map(r =>
         '<div onclick="goArticle('' + r.id + '')" style="padding:8px 0;border-bottom:1px solid var(--light-gray);cursor:pointer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='inherit'">' +
-        '<p style="font-size:10px;color:var(--gray);margin-bottom:3px;font-family:'Noto Sans KR',sans-serif">' + r.byline + '</p>' +
+        '<p style="font-size:10px;color:var(--gray);margin-bottom:3px">' + (r.byline||'') + '</p>' +
         '<p style="font-family:'Playfair Display',serif;font-size:13px;line-height:1.35">' + r.title + '</p></div>'
       ).join('')
     : '<p style="font-size:13px;color:var(--gray)">없음</p>';
