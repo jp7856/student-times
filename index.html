@@ -113,10 +113,10 @@ footer .footer-title{font-family:'Playfair Display',serif;font-size:22px;color:#
     </div>
   </div>
   <nav class="grade-tabs">
-    <a onclick="switchGrade('kinder')" id="tab-kinder" class="active">Kinder</a>
-    <a onclick="switchGrade('kids')" id="tab-kids">Kids</a>
-    <a onclick="switchGrade('junior')" id="tab-junior">Junior</a>
-    <a onclick="switchGrade('times')" id="tab-times">Times</a>
+    <a onclick="switchGradeById(this)" data-grade="kinder" id="tab-kinder" class="active">Kinder</a>
+    <a onclick="switchGradeById(this)" data-grade="kids" id="tab-kids">Kids</a>
+    <a onclick="switchGradeById(this)" data-grade="junior" id="tab-junior">Junior</a>
+    <a onclick="switchGradeById(this)" data-grade="times" id="tab-times">Times</a>
   </nav>
 </header>
 <div class="issue-bar">
@@ -375,6 +375,7 @@ function goBack() {
   if (prevPage === 'issue') goIssue(currentIssue); else goHome();
 }
 
+function switchGradeById(el) { switchGrade(el.dataset.grade); }
 function switchGrade(grade) {
   currentGrade = grade;
   document.querySelectorAll('.grade-tabs a').forEach(t => t.classList.remove('active'));
