@@ -1,430 +1,543 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Times</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<title>용훈_Times</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#1a2b4a;--red:#c0392b;--light-bg:#f5f0e8;--white:#ffffff;--gray:#6b7280;--light-gray:#e8e2d9;--text:#1e1e1e;--text-muted:#555}
-body{font-family:'Source Serif 4',Georgia,serif;background:var(--light-bg);color:var(--text)}
-a{text-decoration:none;color:inherit}
-.page{display:none}.page.active{display:block}
-.top-bar{background:var(--navy);color:#cdd8e8;font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:6px 0;text-align:center;letter-spacing:.5px}
-header{background:var(--white);border-bottom:3px double var(--navy)}
-.header-inner{max-width:1080px;margin:0 auto;padding:16px 20px 0}
-.header-meta{display:flex;justify-content:space-between;align-items:center;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--gray);border-bottom:1px solid var(--light-gray);padding-bottom:8px;margin-bottom:10px}
-.masthead{text-align:center;padding:8px 0 12px;cursor:pointer}
-.masthead h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,72px);font-weight:900;color:var(--navy);letter-spacing:-1px;line-height:1}
-.masthead .tagline{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--gray);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
-.grade-tabs{background:var(--navy);display:flex;justify-content:center}
-.grade-tabs a{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;color:#8fa5c5;padding:10px 32px;border-right:1px solid #2e4268;transition:all .2s;letter-spacing:.5px;cursor:pointer}
-.grade-tabs a:last-child{border-right:none}
-.grade-tabs a.active,.grade-tabs a:hover{background:var(--red);color:#fff}
-.issue-bar{background:var(--white);border-bottom:1px solid var(--light-gray);padding:8px 0}
-.issue-bar-inner{max-width:1080px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.issue-label{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--gray);font-weight:700;margin-right:4px}
-.issue-btn{font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:3px 10px;border:1px solid var(--light-gray);border-radius:2px;background:var(--white);color:var(--text-muted);cursor:pointer;transition:all .15s}
-.issue-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-.issue-btn:hover:not(.active){border-color:var(--navy);color:var(--navy)}
-.main-wrap{max-width:1080px;margin:0 auto;padding:24px 20px}
-.content-layout{display:grid;grid-template-columns:1fr 300px;gap:28px}
-.featured{background:var(--white);border:1px solid var(--light-gray);margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;cursor:pointer;transition:box-shadow .2s}
-.featured:hover{box-shadow:0 4px 20px rgba(26,43,74,.12)}
-.featured-img .img-placeholder{width:100%;min-height:260px;background:linear-gradient(160deg,#d6e4f0,#b8cedd);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#7a9ab5;font-size:13px;font-family:'Noto Sans KR',sans-serif;gap:8px}
-.featured-body{padding:24px 22px;display:flex;flex-direction:column;justify-content:center}
-.issue-tag{display:inline-block;background:var(--red);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.5px;margin-bottom:10px}
-.featured-body h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:10px}
-.featured-body .byline{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--red);font-weight:700;margin-bottom:8px}
-.featured-body p{font-size:14px;line-height:1.7;color:var(--text-muted)}
-.read-more{display:inline-block;margin-top:14px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:700;color:var(--navy);border-bottom:1.5px solid var(--navy);padding-bottom:1px}
-.article-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.article-card{background:var(--white);border:1px solid var(--light-gray);overflow:hidden;cursor:pointer;transition:box-shadow .2s}
-.article-card:hover{box-shadow:0 4px 16px rgba(26,43,74,.1)}
-.card-img{height:140px;background:linear-gradient(160deg,#e8eef4,#d0dce6);display:flex;align-items:center;justify-content:center;color:#8aa0b5}
-.card-body{padding:14px 14px 16px}
-.card-issue{font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--gray);margin-bottom:5px}
-.article-card h3{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);line-height:1.35;margin-bottom:6px}
-.article-card p{font-size:12.5px;line-height:1.6;color:var(--text-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.sidebar{display:flex;flex-direction:column;gap:20px}
-.sidebar-box{background:var(--white);border:1px solid var(--light-gray);overflow:hidden}
-.box-title{background:var(--navy);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;padding:8px 14px;letter-spacing:1px;text-transform:uppercase}
-.box-content{padding:14px}
-.archive-list{list-style:none}
-.archive-list li{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--light-gray);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:color .15s}
-.archive-list li:last-child{border-bottom:none}
-.archive-list li:hover{color:var(--red)}
-.iss-num{font-weight:700;color:var(--navy)}
-.iss-date{color:var(--gray);font-size:11px}
-.year-tabs{display:flex;gap:6px;margin-bottom:10px}
-.year-btn{font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:3px 10px;border:1px solid var(--light-gray);background:var(--white);cursor:pointer;color:var(--text-muted);border-radius:2px;transition:all .15s}
-.year-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-.month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.month-btn{font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:5px 4px;border:1px solid var(--light-gray);background:var(--white);cursor:pointer;color:var(--gray);text-align:center;border-radius:2px;transition:all .15s}
-.month-btn:hover,.month-btn.has-issue{border-color:var(--navy);color:var(--navy);font-weight:700}
-.back-btn{display:inline-flex;align-items:center;gap:6px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--navy);border:1px solid var(--light-gray);background:var(--white);padding:6px 14px;border-radius:2px;cursor:pointer;margin-bottom:20px;transition:all .15s}
-.back-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
-.issue-page-header{margin-bottom:20px}
-.issue-page-header h2{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:4px}
-.issue-page-header p{font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--gray)}
-.issue-list-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.issue-list-card{background:var(--white);border:1px solid var(--light-gray);display:flex;gap:14px;padding:14px;cursor:pointer;transition:box-shadow .2s;align-items:flex-start}
-.issue-list-card:hover{box-shadow:0 3px 14px rgba(26,43,74,.1)}
-.issue-list-thumb{width:80px;min-width:80px;height:70px;background:linear-gradient(160deg,#e8eef4,#d0dce6);display:flex;align-items:center;justify-content:center;color:#8aa0b5;flex-shrink:0}
-.issue-list-body .tag{font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--gray);margin-bottom:4px}
-.issue-list-body h4{font-family:'Playfair Display',serif;font-size:14px;color:var(--navy);line-height:1.3;margin-bottom:4px}
-.article-detail{max-width:1080px;margin:0 auto;padding:24px 20px}
-.article-detail-inner{display:grid;grid-template-columns:1fr 300px;gap:28px}
-.article-detail-content{background:var(--white);border:1px solid var(--light-gray);padding:32px 36px}
-.detail-tag{display:inline-block;background:var(--red);color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.5px;margin-bottom:14px}
-.article-detail-content h1{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:12px}
-.detail-byline{font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--red);font-weight:700;margin-bottom:6px}
-.detail-date{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:var(--gray);margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--light-gray)}
-.detail-hero{width:100%;height:280px;background:linear-gradient(160deg,#d6e4f0,#b8cedd);display:flex;align-items:center;justify-content:center;color:#7a9ab5;font-family:'Noto Sans KR',sans-serif;font-size:13px;margin-bottom:24px}
-.detail-body{font-size:16px;line-height:1.9;color:var(--text-muted)}
-.detail-body p{margin-bottom:1.2em}
-.empty-state{text-align:center;padding:60px 20px;color:var(--gray);font-family:'Noto Sans KR',sans-serif}
-.empty-state .empty-icon{font-size:40px;margin-bottom:12px;opacity:.4}
-.empty-state p{font-size:14px;line-height:1.8}
-footer{background:var(--navy);color:#8fa5c5;font-family:'Noto Sans KR',sans-serif;font-size:12px;text-align:center;padding:24px 20px;margin-top:32px;line-height:2}
-footer .footer-title{font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:6px}
-@media(max-width:768px){
-  .content-layout,.article-detail-inner{grid-template-columns:1fr}
-  .featured{grid-template-columns:1fr}
-  .article-grid,.issue-list-grid{grid-template-columns:1fr}
-  .masthead h1{font-size:40px}
-  .article-detail-content{padding:20px 18px}
-}
+:root{--red:#d32f2f;--navy:#0d1b3e;--bg:#f4f4f4;--text:#111;--muted:#666;--border:#e0e0e0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:8px;padding:32px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:12px;color:var(--muted);margin-bottom:18px}
+.modal input{width:100%;border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px}
+.modal input:focus{border-color:var(--red)}
+.modal .ok{width:100%;background:var(--red);color:#fff;border:none;border-radius:4px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.modal .err{font-size:12px;color:var(--red);text-align:center;margin-top:8px;min-height:16px}
+.modal .x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)}
+
+.article-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 20px}
+.article-overlay.show{display:flex}
+.article-modal{background:#fff;border-radius:8px;width:100%;max-width:760px;margin:auto;overflow:hidden;position:relative;box-shadow:0 12px 48px rgba(0,0,0,.25)}
+.article-modal-close{position:absolute;top:14px;right:16px;background:rgba(0,0,0,.5);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.article-modal-close:hover{background:var(--red)}
+/* 기사 팝업 - 상단 헤더 */
+.article-header{padding:24px 28px 16px;border-bottom:1px solid var(--border)}
+.article-badges{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.article-title{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:900;line-height:1.4;color:var(--navy);margin-bottom:6px}
+.article-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+/* 기사 팝업 - 하단 본문 (좌이미지 + 우텍스트) */
+.article-body-wrap{display:grid;grid-template-columns:240px 1fr;min-height:280px}
+.article-img-col{background:#f8f8f8;display:flex;align-items:flex-start;justify-content:center;padding:20px 14px;border-right:1px solid var(--border)}
+.article-hero{width:210px;height:auto;object-fit:contain;display:block;border-radius:4px}
+.article-hero-ph{width:210px;aspect-ratio:3/4;background:#e8eaf6;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:32px}
+.article-text-col{padding:20px 24px 28px;overflow-y:auto;max-height:520px}
+.article-body{font-size:14px;line-height:2;color:var(--text);white-space:pre-line}
+.vocab{color:var(--muted);font-size:13px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--border);line-height:2}
+
+.util-bar{background:var(--navy);color:#8899bb;font-size:11px;padding:5px 20px;display:flex;justify-content:space-between}
+header{background:#fff;border-bottom:3px solid var(--red);padding:14px 20px}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:'Noto Serif KR',serif;font-size:36px;font-weight:900;color:var(--navy);letter-spacing:-1px;line-height:1}
+.logo em{color:var(--red);font-style:normal}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
+.header-right{display:flex;align-items:center;gap:10px}
+.search-box{display:flex;border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.search-box input{border:none;outline:none;padding:7px 12px;font-size:13px;font-family:inherit;width:180px;color:var(--text)}
+.search-box button{background:var(--red);border:none;color:#fff;padding:7px 12px;cursor:pointer;font-size:13px}
+.admin-trigger{background:none;border:1px solid var(--border);border-radius:3px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted);transition:all .15s;white-space:nowrap}
+.admin-trigger:hover,.admin-trigger.on{background:var(--red);color:#fff;border-color:var(--red)}
+
+.admin-panel{background:#fff8f8;border-bottom:1px solid #ffcdd2;padding:10px 20px;display:none}
+.admin-panel.show{display:block}
+.admin-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-label{font-size:12px;font-weight:700;color:var(--red);white-space:nowrap}
+.admin-info{font-size:12px;color:var(--muted);flex:1;min-width:180px}
+.upload-btn{background:var(--red);color:#fff;border:none;border-radius:3px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s}
+.upload-btn:hover{opacity:.85}
+.upload-btn:disabled{opacity:.5;cursor:not-allowed}
+.logout-sm{background:none;border:1px solid #ffcdd2;border-radius:3px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--red);cursor:pointer;font-family:inherit}
+.prog-wrap{width:100%;display:none}
+.prog-wrap.show{display:block}
+.prog-bg{background:#ffcdd2;border-radius:4px;height:5px;margin-top:8px;overflow:hidden}
+.prog-bar{height:100%;background:var(--red);border-radius:4px;transition:width .3s;width:0%}
+.prog-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+.upload-msg{font-size:12px;font-weight:700;margin-top:8px;padding:8px 12px;border-radius:4px;display:none}
+.upload-msg.ok{background:#e8f5e9;color:#2e7d32;display:block}
+.upload-msg.ing{background:#e3f2fd;color:#1565c0;display:block}
+.upload-msg.err{background:#ffebee;color:#c62828;display:block}
+
+.cat-nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cat-nav-inner{max-width:1200px;margin:0 auto;display:flex}
+.cat-tab{padding:12px 20px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.cat-tab:hover{color:var(--text)}
+.cat-tab.active{color:var(--red);border-bottom-color:var(--red)}
+.cat-cnt{font-size:10px;background:#eee;color:var(--muted);padding:1px 6px;border-radius:10px;font-weight:700}
+.cat-tab.active .cat-cnt{background:var(--red);color:#fff}
+
+.section-bar{max-width:1200px;margin:16px auto 12px;padding:0 20px;display:flex;align-items:center;gap:10px}
+.section-title{font-size:15px;font-weight:900;color:var(--navy);border-left:4px solid var(--red);padding-left:10px}
+.section-count{font-size:11px;color:var(--muted)}
+.section-line{flex:1;height:1px;background:var(--border)}
+.spin-area{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.spinner{width:12px;height:12px;border:2px solid #ddd;border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.page-wrap{max-width:1200px;margin:0 auto;padding:0 20px 48px}
+.top-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.main-art{cursor:pointer}
+.main-art:hover .main-title{color:var(--red)}
+.main-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:2px;background:#e8e8e8}
+.main-img-ph{width:100%;aspect-ratio:16/9;background:#e8eaf6;border-radius:2px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:32px}
+.main-badges{display:flex;gap:6px;margin:10px 0 6px;align-items:center;flex-wrap:wrap}
+.main-title{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:900;line-height:1.4;color:var(--text);margin-bottom:8px;transition:color .15s}
+.main-body{font-size:13px;color:var(--muted);line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.main-date{font-size:11px;color:#aaa;margin-top:8px}
+.read-link{display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:var(--red);border:1px solid var(--red);padding:5px 14px;border-radius:2px;cursor:pointer;transition:all .15s}
+.read-link:hover{background:var(--red);color:#fff}
+
+.side-list{border-left:1px solid var(--border);padding-left:20px;display:flex;flex-direction:column}
+.side-item{display:grid;grid-template-columns:80px 1fr;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.side-item:first-child{padding-top:0}
+.side-item:last-child{border-bottom:none;padding-bottom:0}
+.side-item:hover .side-title{color:var(--red)}
+.side-thumb{width:80px;aspect-ratio:4/3;object-fit:cover;border-radius:2px;display:block;background:#e8e8e8}
+.side-thumb-ph{width:80px;aspect-ratio:4/3;background:#e8eaf6;border-radius:2px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:16px}
+.side-title{font-size:13px;font-weight:700;line-height:1.4;color:var(--text);margin-bottom:5px;transition:color .15s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.side-badges{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.side-date{font-size:10px;color:#aaa}
+
+.grid-wrap{margin-bottom:24px;border-top:2px solid var(--red)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr)}
+.grid-item{padding:16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;background:#fff}
+.grid-item:nth-child(3n){border-right:none}
+.grid-item:hover .grid-title{color:var(--red)}
+.grid-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:2px;margin-bottom:8px;background:#e8e8e8}
+.grid-img-ph{width:100%;aspect-ratio:16/9;background:#e8eaf6;border-radius:2px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:20px}
+.grid-badges{display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap;align-items:center}
+.grid-title{font-size:14px;font-weight:700;line-height:1.45;color:var(--text);margin-bottom:5px;transition:color .15s;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.grid-body{font-size:12px;color:var(--muted);line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.grid-date{font-size:10px;color:#aaa;margin-top:6px}
+
+.list-wrap{background:#fff;border-top:2px solid var(--red)}
+.list-item{display:grid;grid-template-columns:100px 1fr;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;align-items:start}
+.list-item:hover .list-title{color:var(--red)}
+.list-thumb{width:100px;aspect-ratio:4/3;object-fit:cover;border-radius:2px;display:block;background:#e8e8e8}
+.list-thumb-ph{width:100px;aspect-ratio:4/3;background:#e8eaf6;border-radius:2px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:16px}
+.list-title{font-size:14px;font-weight:700;line-height:1.4;color:var(--text);margin-bottom:5px;transition:color .15s}
+.list-body{font-size:12px;color:var(--muted);line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
+.list-badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.list-date{font-size:10px;color:#aaa}
+
+.mbadge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:.04em}
+.b-kinder{background:#fff3e0;color:#bf360c}
+.b-kids{background:#e8f5e9;color:#1b5e20}
+.b-junior{background:#e3f2fd;color:#0d47a1}
+.b-times{background:#f3e5f5;color:#4a148c}
+.lvbadge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;background:#eceff1;color:#546e7a}
+
+.state-box{padding:60px 20px;text-align:center}
+.state-icon{font-size:44px;margin-bottom:12px;opacity:.3}
+.state-title{font-size:18px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.state-msg{font-size:13px;color:#aaa;line-height:1.8}
+footer{background:var(--navy);color:#7788aa;padding:24px 20px;text-align:center;font-size:12px}
+footer strong{color:#fff}
 </style>
 </head>
 <body>
-<div class="top-bar">Student Times · Kinder · Kids · Junior · Times</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="x" onclick="closeModal()">✕</button>
+    <h3>🔐 관리자 로그인</h3>
+    <p>관리자 전용 기능입니다.</p>
+    <input type="password" id="pw" placeholder="비밀번호 입력">
+    <button class="ok" onclick="tryLogin()">로그인</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<div class="article-overlay" id="article-overlay" onclick="closeArticle(event)">
+  <div class="article-modal" id="article-modal">
+    <button class="article-modal-close" onclick="closeArticleBtn()">✕</button>
+    <div id="article-body-content"></div>
+  </div>
+</div>
+
+<div class="util-bar">
+  <span id="today-date"></span>
+  <span>NE능률 · English Newspaper for World Students</span>
+</div>
+
 <header>
   <div class="header-inner">
-    <div class="header-meta">
-      <span id="edition-label">Kinder Edition</span>
-      <span id="vol-label">Vol. 1, No. 1</span>
-      <span>Published Weekly</span>
+    <div>
+      <div class="logo">용훈<em>_Times</em></div>
+      <div class="logo-sub">English Newspaper for World Students 🌍</div>
     </div>
-    <div class="masthead" onclick="goHome()">
-      <h1>Student Times</h1>
-      <p class="tagline">Written by Students · For Students · In English</p>
+    <div class="header-right">
+      <div class="search-box">
+        <input type="text" id="q" placeholder="기사 검색...">
+        <button onclick="doSearch()">🔍</button>
+      </div>
+      <button class="admin-trigger" id="admin-btn" onclick="handleAdmin()">⚙ 관리자</button>
     </div>
   </div>
-  <nav class="grade-tabs">
-    <a onclick="switchGradeById(this)" data-grade="kinder" id="tab-kinder" class="active">Kinder</a>
-    <a onclick="switchGradeById(this)" data-grade="kids" id="tab-kids">Kids</a>
-    <a onclick="switchGradeById(this)" data-grade="junior" id="tab-junior">Junior</a>
-    <a onclick="switchGradeById(this)" data-grade="times" id="tab-times">Times</a>
-  </nav>
 </header>
-<div class="issue-bar">
-  <div class="issue-bar-inner">
-    <span class="issue-label">섹션 :</span>
-    <div id="issue-btn-wrap"></div>
-  </div>
-</div>
-<div id="page-home" class="page active">
-  <div class="main-wrap">
-    <div class="content-layout">
-      <div>
-        <div id="featured-wrap"></div>
-        <div class="article-grid" id="article-grid"></div>
-      </div>
-      <aside class="sidebar">
-        <div class="sidebar-box">
-          <div class="box-title">이전 호 목록</div>
-          <div class="box-content"><ul class="archive-list" id="sidebar-archive"></ul></div>
-        </div>
-        <div class="sidebar-box">
-          <div class="box-title">호수 아카이브</div>
-          <div class="box-content">
-            <div class="year-tabs" id="year-tabs"></div>
-            <div class="month-grid" id="month-grid"></div>
-          </div>
-        </div>
-        <div class="sidebar-box">
-          <div class="box-title">About This Paper</div>
-          <div class="box-content" style="font-size:13px;line-height:1.8;color:var(--text-muted);font-family:'Noto Sans KR',sans-serif;">
-            <p>Student Times는 학생 기자들이 직접 취재하고 영어로 쓰는 학생 신문입니다.</p><br>
-            <p>매주 발행되며, 학교 소식·지역 이슈·문화·과학 등 다양한 주제를 다룹니다.</p>
-          </div>
-        </div>
-      </aside>
+
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-inner">
+    <span class="admin-label">⚙ 관리자 모드</span>
+    <span class="admin-info">구글 시트(KINDER · KIDS · JUNIOR · TIMES) 최신 기사를 불러옵니다.</span>
+    <button class="upload-btn" id="upload-btn" onclick="doUpload()">🔄 기사 업로드 (원클릭)</button>
+    <button class="logout-sm" onclick="doLogout()">로그아웃</button>
+    <div class="prog-wrap" id="prog-wrap">
+      <div class="prog-bg"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="prog-lbl" id="prog-lbl"></div>
     </div>
+    <div class="upload-msg" id="upload-msg"></div>
   </div>
 </div>
-<div id="page-issue" class="page">
-  <div class="main-wrap">
-    <button class="back-btn" onclick="goHome()">← 메인으로 돌아가기</button>
-    <div class="issue-page-header">
-      <h2 id="issue-title"></h2>
-      <p id="issue-date"></p>
-    </div>
-    <div class="issue-list-grid" id="issue-list-grid"></div>
+
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <div class="cat-tab active" data-tab="all" onclick="switchTab('all',this)">전체 <span class="cat-cnt" id="b-all">—</span></div>
+    <div class="cat-tab" data-tab="kinder" onclick="switchTab('kinder',this)">🌟 Kinder <span class="cat-cnt" id="b-kinder">—</span></div>
+    <div class="cat-tab" data-tab="kids" onclick="switchTab('kids',this)">🌿 Kids <span class="cat-cnt" id="b-kids">—</span></div>
+    <div class="cat-tab" data-tab="junior" onclick="switchTab('junior',this)">🚀 Junior <span class="cat-cnt" id="b-junior">—</span></div>
+    <div class="cat-tab" data-tab="times" onclick="switchTab('times',this)">🏆 Times <span class="cat-cnt" id="b-times">—</span></div>
+  </div>
+</nav>
+
+<div class="section-bar">
+  <div class="section-title" id="sec-title">전체 기사</div>
+  <div class="section-count" id="sec-count"></div>
+  <div class="section-line"></div>
+  <div class="spin-area" id="spin-area">
+    <div class="spinner"></div>
+    <span id="spin-msg">불러오는 중...</span>
   </div>
 </div>
-<div id="page-article" class="page">
-  <div class="article-detail">
-    <div class="article-detail-inner">
-      <div class="article-detail-content">
-        <button class="back-btn" id="article-back-btn" onclick="goBack()">← 목록으로 돌아가기</button>
-        <span class="detail-tag" id="detail-tag"></span>
-        <h1 id="detail-title"></h1>
-        <p class="detail-byline" id="detail-byline"></p>
-        <p class="detail-date" id="detail-date"></p>
-        <div class="detail-hero">기사 이미지</div>
-        <div class="detail-body" id="detail-body"></div>
-      </div>
-      <aside class="sidebar">
-        <div class="sidebar-box">
-          <div class="box-title">같은 섹션 다른 기사</div>
-          <div class="box-content" id="related-articles"></div>
-        </div>
-        <div class="sidebar-box">
-          <div class="box-title">이전 호 목록</div>
-          <div class="box-content"><ul class="archive-list" id="detail-archive"></ul></div>
-        </div>
-      </aside>
-    </div>
+
+<div class="page-wrap" id="page-wrap">
+  <div class="state-box">
+    <div class="state-icon">📡</div>
+    <div class="state-title">기사를 불러오고 있어요</div>
+    <div class="state-msg">잠깐만 기다려주세요...</div>
   </div>
 </div>
+
 <footer>
-  <div class="footer-title">Student Times</div>
-  <div>Written by Students · For Students · In English</div>
-  <div style="margin-top:6px;font-size:11px;color:#5a7498;">Copyright © 2026 Student Times. All rights reserved.</div>
+  <strong>용훈_Times</strong> · Powered by JP © 2026
 </footer>
+
 <script>
+const TABS = [
+  { key:'kinder', label:'Kinder', url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vSISuB8k6bVYgAGMLVmIQLE4tXc3JvwuCmP3hbEPzs2aJl0l588JZHTmk-Q27z2DTju_xQoYnzjg_uO/pub?gid=527409597&single=true&output=csv' },
+  { key:'kids',   label:'Kids',   url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vSISuB8k6bVYgAGMLVmIQLE4tXc3JvwuCmP3hbEPzs2aJl0l588JZHTmk-Q27z2DTju_xQoYnzjg_uO/pub?gid=427543538&single=true&output=csv' },
+  { key:'junior', label:'Junior', url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vSISuB8k6bVYgAGMLVmIQLE4tXc3JvwuCmP3hbEPzs2aJl0l588JZHTmk-Q27z2DTju_xQoYnzjg_uO/pub?gid=58678449&single=true&output=csv' },
+  { key:'times',  label:'Times',  url:'https://docs.google.com/spreadsheets/d/e/2PACX-1vSISuB8k6bVYgAGMLVmIQLE4tXc3JvwuCmP3hbEPzs2aJl0l588JZHTmk-Q27z2DTju_xQoYnzjg_uO/pub?gid=1740109976&single=true&output=csv' },
+];
+const ADMIN_PW='netimes2026';
+const TAB_LABEL={all:'전체 기사',kinder:'Kinder 기사',kids:'Kids 기사',junior:'Junior 기사',times:'Times 기사'};
+const MEDIA_CLS={kinder:'b-kinder',kids:'b-kids',junior:'b-junior',times:'b-times'};
+const MEDIA_LBL={kinder:'Kinder',kids:'Kids',junior:'Junior',times:'Times'};
 
-const KINDER_ARTICLES = [{"id": "kinder-1", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "BTS Wins Grammy Award", "byline": "Our Nation · K-pop & Media", "preview": "BTS is a famous K-pop group from Korea.", "body": "<p>BTS is a famous K-pop group from Korea. They have millions of fans around the world.</p><p>Recently, BTS won a Grammy Award in the United States. It was a big moment for Korean music.</p><p>Fans from many countries celebrated together. BTS thanked their fans in their speech.</p>"}, {"id": "kinder-2", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-drama Squid Game Breaks Records", "byline": "Our Nation · K-pop & Media", "preview": "A Korean drama called Squid Game became very popular around the world.", "body": "<p>A Korean drama called Squid Game became very popular around the world. It was shown on Netflix.</p><p>Millions of people in many countries watched it. It broke many viewing records.</p><p>Squid Game made people curious about Korean culture and language. Many viewers started learning Korean.</p>"}, {"id": "kinder-3", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "BLACKPINK Performs at Coachella", "byline": "Our Nation · K-pop & Media", "preview": "BLACKPINK is a popular K-pop girl group.", "body": "<p>BLACKPINK is a popular K-pop girl group. They are known for their powerful performances.</p><p>They performed at Coachella, a big music festival in the United States. They were the first K-pop girl group to do this.</p><p>Thousands of fans cheered for them. It was a historic moment for K-pop.</p>"}, {"id": "kinder-4", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-pop Dance Classes Are Popular Worldwide", "byline": "Our Nation · K-pop & Media", "preview": "K-pop dance classes are now offered in many countries.", "body": "<p>K-pop dance classes are now offered in many countries. People of all ages enjoy learning K-pop dances.</p><p>Many dance schools teach popular moves from BTS and BLACKPINK videos. Students practice hard to learn the steps.</p><p>These classes help spread Korean culture around the world.</p>"}, {"id": "kinder-5", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Music Shows Are Watched Globally", "byline": "Our Nation · K-pop & Media", "preview": "Korean music shows like Music Bank and Inkigayo are very popular.", "body": "<p>Korean music shows like Music Bank and Inkigayo are very popular. Fans around the world watch them online.</p><p>These shows feature the latest K-pop songs and performances. Groups compete to win the top award each week.</p><p>Millions of fans vote for their favorite artists. It is very exciting to watch.</p>"}, {"id": "kinder-6", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "SM Entertainment Opens New Building", "byline": "Our Nation · K-pop & Media", "preview": "SM Entertainment is one of Korea's biggest music companies.", "body": "<p>SM Entertainment is one of Korea's biggest music companies. They manage famous K-pop groups.</p><p>Recently, SM Entertainment opened a new building in Seoul. It has recording studios and training rooms.</p><p>Many young Koreans dream of becoming K-pop stars. They train hard every day at companies like SM.</p>"}, {"id": "kinder-7", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Songs Top Global Music Charts", "byline": "Our Nation · K-pop & Media", "preview": "Korean songs are now appearing at the top of global music charts.", "body": "<p>Korean songs are now appearing at the top of global music charts. Charts like Billboard and Spotify show K-pop songs.</p><p>Fans from all over the world stream Korean music every day. This helps songs reach number one.</p><p>K-pop is now one of the most popular music styles in the world.</p>"}, {"id": "kinder-8", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Hallyu Wave Spreads Korean Culture", "byline": "Our Nation · K-pop & Media", "preview": "The Hallyu Wave is the spread of Korean culture around the world.", "body": "<p>The Hallyu Wave is the spread of Korean culture around the world. It includes K-pop, dramas, and food.</p><p>Many people became interested in Korea because of Hallyu. They learn Korean and visit Korea as tourists.</p><p>The Korean government supports Hallyu. It helps Korea's economy grow.</p>"}, {"id": "kinder-9", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-pop Albums Sell Millions Worldwide", "byline": "Our Nation · K-pop & Media", "preview": "K-pop albums are very popular around the world.", "body": "<p>K-pop albums are very popular around the world. Fans buy them to support their favorite artists.</p><p>Albums often come with photo cards and special gifts inside. Fans love collecting these items.</p><p>Recently, K-pop album sales reached a new record. Korea exported millions of albums to other countries.</p>"}, {"id": "kinder-10", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Webtoons Become Popular Dramas", "byline": "Our Nation · K-pop & Media", "preview": "Webtoons are digital comics that are read on phones and computers.", "body": "<p>Webtoons are digital comics that are read on phones and computers. Korea makes many popular webtoons.</p><p>Some webtoons become famous TV dramas or movies. True Beauty and Itaewon Class started as webtoons.</p><p>Millions of people around the world read Korean webtoons every day.</p>"}, {"id": "kinder-11", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "NCT Opens World Tour", "byline": "Our Nation · K-pop & Media", "preview": "NCT is a large K-pop group with many members.", "body": "<p>NCT is a large K-pop group with many members. They are known for their unique music style.</p><p>Recently, NCT announced a world tour. They will perform in Asia, Europe, and the Americas.</p><p>Fans around the world are excited. Tickets sold out very quickly after they went on sale.</p>"}, {"id": "kinder-12", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Actors Win International Awards", "byline": "Our Nation · K-pop & Media", "preview": "Korean actors are winning awards at international film festivals.", "body": "<p>Korean actors are winning awards at international film festivals. This shows the world how talented they are.</p><p>Actors like Song Kang-ho have won prizes at the Cannes Film Festival. These awards make Koreans proud.</p><p>More and more Korean films are being shown at international festivals every year.</p>"}, {"id": "kinder-13", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-pop Fan Clubs Help Communities", "byline": "Our Nation · K-pop & Media", "preview": "K-pop fan clubs do more than support their favorite artists.", "body": "<p>K-pop fan clubs do more than support their favorite artists. They also help their communities.</p><p>Fan clubs in Korea and other countries donate money to charity. They do this to celebrate their favorite singer's birthday.</p><p>This trend shows that K-pop fans care about others. It makes fan clubs very special.</p>"}, {"id": "kinder-14", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Music Videos Break YouTube Records", "byline": "Our Nation · K-pop & Media", "preview": "Korean music videos are some of the most watched videos on YouTube.", "body": "<p>Korean music videos are some of the most watched videos on YouTube. Many reach 100 million views quickly.</p><p>BTS and BLACKPINK have broken YouTube records many times. Fans watch their videos again and again.</p><p>YouTube is an important platform for K-pop. It helps artists reach fans around the world.</p>"}, {"id": "kinder-15", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-pop Audition Shows Find New Stars", "byline": "Our Nation · K-pop & Media", "preview": "K-pop audition shows are very popular in Korea.", "body": "<p>K-pop audition shows are very popular in Korea. Young people compete to become the next K-pop star.</p><p>Shows like Produce 101 find talented singers and dancers. Winners form new groups and debut.</p><p>Millions of viewers watch and vote for their favorites. These shows have created many successful groups.</p>"}, {"id": "kinder-16", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Drama OSTs Are Loved Worldwide", "byline": "Our Nation · K-pop & Media", "preview": "OST stands for Original Soundtrack.", "body": "<p>OST stands for Original Soundtrack. Korean drama OSTs are songs made for TV dramas.</p><p>Many drama OSTs become very popular. Fans listen to them to remember their favorite drama moments.</p><p>Korean singers and bands record OSTs for famous dramas. Some OSTs have been played millions of times online.</p>"}, {"id": "kinder-17", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "K-pop Merchandise Sells Around the World", "byline": "Our Nation · K-pop & Media", "preview": "K-pop merchandise includes items like posters, hats, and light sticks.", "body": "<p>K-pop merchandise includes items like posters, hats, and light sticks. Fans buy these to show their love.</p><p>K-pop stores can be found in many countries now. Some fans spend a lot of money on merchandise.</p><p>Online stores also sell K-pop items worldwide. The K-pop merchandise business is very large.</p>"}, {"id": "kinder-18", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Stray Kids Win Best Album Award", "byline": "Our Nation · K-pop & Media", "preview": "Stray Kids is a popular K-pop boy group.", "body": "<p>Stray Kids is a popular K-pop boy group. They are known for writing their own songs.</p><p>Recently, they won a Best Album Award at a major music ceremony. It was their first time winning this prize.</p><p>The members thanked their fans, called STAYs. The group promised to make more great music.</p>"}, {"id": "kinder-19", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Drama Filming Locations Become Tourist Spots", "byline": "Our Nation · K-pop & Media", "preview": "Many tourists visit places where Korean dramas were filmed.", "body": "<p>Many tourists visit places where Korean dramas were filmed. These places become very popular.</p><p>Fans want to see the locations they watched on TV. Some travel from other countries just to visit them.</p><p>Local businesses near filming locations do well. Restaurants and shops see more customers because of dramas.</p>"}, {"id": "kinder-20", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "IVE Becomes Top K-pop Girl Group", "byline": "Our Nation · K-pop & Media", "preview": "IVE is a K-pop girl group that debuted in 2021.", "body": "<p>IVE is a K-pop girl group that debuted in 2021. They quickly became one of Korea's top groups.</p><p>Their songs have millions of streams worldwide. They won Rookie of the Year at several award shows.</p><p>IVE is known for their strong stage presence and catchy music. Many fans around the world love them.</p>"}, {"id": "kinder-21", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Kimchi Is Korea's Most Famous Food", "byline": "Our Nation · Food & Taste", "preview": "Kimchi is a traditional Korean food.", "body": "<p>Kimchi is a traditional Korean food. It is made of cabbage and spicy sauce.</p><p>Koreans eat kimchi with almost every meal. It is healthy and full of vitamins.</p><p>Now, kimchi is popular in many countries. Restaurants around the world serve it as a side dish.</p>"}, {"id": "kinder-22", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Tteokbokki Is a Popular Street Food", "byline": "Our Nation · Food & Taste", "preview": "Tteokbokki is a spicy Korean street food.", "body": "<p>Tteokbokki is a spicy Korean street food. It is made of chewy rice cakes in red sauce.</p><p>People buy it from street vendors all over Korea. It is cheap and delicious.</p><p>Now, tteokbokki is sold in many countries. It is one of the most loved Korean street foods.</p>"}, {"id": "kinder-23", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Fried Chicken Is a World Favorite", "byline": "Our Nation · Food & Taste", "preview": "Korean fried chicken is very crispy and delicious.", "body": "<p>Korean fried chicken is very crispy and delicious. It is often covered in sweet or spicy sauce.</p><p>Many Korean fried chicken restaurants have opened around the world. People love the crunchy texture.</p><p>In Korea, people often eat fried chicken with beer. This combination is called chimaek.</p>"}, {"id": "kinder-24", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Bulgogi Is Korea's Beloved BBQ", "byline": "Our Nation · Food & Taste", "preview": "Bulgogi is a popular Korean dish.", "body": "<p>Bulgogi is a popular Korean dish. It is made of thin slices of beef marinated in soy sauce and sugar.</p><p>People grill bulgogi at the table. The sweet smell fills the whole restaurant.</p><p>Bulgogi is loved by people of all ages. It is one of the most well-known Korean foods abroad.</p>"}, {"id": "kinder-25", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Japchae Is a Special Noodle Dish", "byline": "Our Nation · Food & Taste", "preview": "Japchae is a Korean noodle dish.", "body": "<p>Japchae is a Korean noodle dish. It is made with glass noodles, vegetables, and beef.</p><p>Koreans often eat japchae at birthday parties and holidays. It has a sweet and savory taste.</p><p>Japchae is now popular in Korean restaurants around the world. Many people enjoy its unique texture.</p>"}, {"id": "kinder-26", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Samgyeopsal Night Is a Korean Tradition", "byline": "Our Nation · Food & Taste", "preview": "Samgyeopsal is grilled pork belly.", "body": "<p>Samgyeopsal is grilled pork belly. It is a very popular food in Korea.</p><p>Friends and families often gather to eat samgyeopsal together. They grill the meat at the table themselves.</p><p>People wrap the meat in lettuce leaves with garlic and sauce. It is a fun and social way to eat.</p>"}, {"id": "kinder-27", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Sundubu Jjigae Warms You Up", "byline": "Our Nation · Food & Taste", "preview": "Sundubu jjigae is a spicy Korean stew.", "body": "<p>Sundubu jjigae is a spicy Korean stew. It is made with soft tofu, vegetables, and sometimes seafood.</p><p>It is very popular in winter because it is hot and warming. Koreans eat it with a bowl of rice.</p><p>Many Korean restaurants around the world serve sundubu jjigae. People love its rich and spicy flavor.</p>"}, {"id": "kinder-28", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Kimbap Is Korea's Favorite Snack", "byline": "Our Nation · Food & Taste", "preview": "Kimbap is a Korean roll made of rice, vegetables, and meat wrapped in seaweed.", "body": "<p>Kimbap is a Korean roll made of rice, vegetables, and meat wrapped in seaweed. It looks like sushi but tastes different.</p><p>Koreans often eat kimbap as a snack or quick meal. It is easy to carry and eat anywhere.</p><p>Kimbap shops can be found on almost every street in Korea.</p>"}, {"id": "kinder-29", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Hotteok Is a Winter Treat", "byline": "Our Nation · Food & Taste", "preview": "Hotteok is a Korean sweet pancake.", "body": "<p>Hotteok is a Korean sweet pancake. It is filled with sugar, cinnamon, and nuts.</p><p>People buy hotteok from street vendors in winter. It is warm, soft, and delicious.</p><p>The sweet filling melts in your mouth. Hotteok is one of the most loved winter street foods in Korea.</p>"}, {"id": "kinder-30", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Naengmyeon Is a Cool Summer Noodle", "byline": "Our Nation · Food & Taste", "preview": "Naengmyeon is a cold Korean noodle dish.", "body": "<p>Naengmyeon is a cold Korean noodle dish. It is served in an icy broth with vegetables and egg.</p><p>Koreans eat naengmyeon in summer to cool down. The noodles are long and chewy.</p><p>There are two types of naengmyeon. One has a cold soup and the other is mixed with spicy sauce.</p>"}, {"id": "kinder-31", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Instant Noodles Are Famous Worldwide", "byline": "Our Nation · Food & Taste", "preview": "Korean instant noodles, called ramyeon, are very popular.", "body": "<p>Korean instant noodles, called ramyeon, are very popular. They are known for their spicy flavor.</p><p>Buldak ramyeon is one of the spiciest instant noodles in the world. Many people try it as a challenge.</p><p>Korean instant noodles are sold in supermarkets around the world. They are cheap, easy to cook, and delicious.</p>"}, {"id": "kinder-32", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Patbingsu Is Korea's Favorite Summer Dessert", "byline": "Our Nation · Food & Taste", "preview": "Patbingsu is a Korean shaved ice dessert.", "body": "<p>Patbingsu is a Korean shaved ice dessert. It is topped with sweet red beans, fruit, and syrup.</p><p>Koreans love eating patbingsu in summer. Many cafes and shops sell it.</p><p>There are many different types of patbingsu today. Some have ice cream, mochi, or cereal on top.</p>"}, {"id": "kinder-33", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean BBQ Restaurants Open Worldwide", "byline": "Our Nation · Food & Taste", "preview": "Korean BBQ restaurants are opening in many countries.", "body": "<p>Korean BBQ restaurants are opening in many countries. People enjoy grilling meat at their own table.</p><p>Restaurants serve marinated beef, pork, and chicken. Customers cook the meat themselves on a grill.</p><p>Korean BBQ is popular because it is fun and social. Friends and families enjoy eating together.</p>"}, {"id": "kinder-34", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Bibimbap Wins Best Healthy Food Award", "byline": "Our Nation · Food & Taste", "preview": "Bibimbap is a Korean rice bowl with vegetables, egg, and meat.", "body": "<p>Bibimbap is a Korean rice bowl with vegetables, egg, and meat. People mix everything together before eating.</p><p>A food magazine named bibimbap one of the healthiest foods in the world. It is full of vegetables and nutrients.</p><p>Bibimbap is now served in many restaurants worldwide. It is loved for its colorful presentation.</p>"}, {"id": "kinder-35", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Dalgona Coffee Becomes a Global Trend", "byline": "Our Nation · Food & Taste", "preview": "Dalgona coffee became a global trend during the pandemic.", "body": "<p>Dalgona coffee became a global trend during the pandemic. It is made by whipping coffee, sugar, and water.</p><p>People around the world made dalgona coffee at home and shared videos online. It became very popular on social media.</p><p>The coffee gets its name from a Korean sugar candy called dalgona. Both have a sweet, caramel-like taste.</p>"}, {"id": "kinder-36", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Convenience Store Food Is a Hit", "byline": "Our Nation · Food & Taste", "preview": "Korean convenience stores sell amazing food.", "body": "<p>Korean convenience stores sell amazing food. You can find hot snacks, sandwiches, and noodles anytime.</p><p>Stores like CU and GS25 are open 24 hours a day. They are on almost every street in Korea.</p><p>Tourists love visiting Korean convenience stores. They try unique snacks and drinks that are only found in Korea.</p>"}, {"id": "kinder-37", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Ganjang Gejang Is Called Rice Thief", "byline": "Our Nation · Food & Taste", "preview": "Ganjang gejang is raw crab marinated in soy sauce.", "body": "<p>Ganjang gejang is raw crab marinated in soy sauce. It is a traditional Korean dish.</p><p>Koreans call it rice thief because it is so delicious that people eat too much rice with it. It is a special dish often eaten during holidays.</p><p>Making ganjang gejang takes several days of preparation.</p>"}, {"id": "kinder-38", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Snacks Are Exported Worldwide", "byline": "Our Nation · Food & Taste", "preview": "Korean snacks are now sold in supermarkets around the world.", "body": "<p>Korean snacks are now sold in supermarkets around the world. Popular snacks include pepero, choco pie, and honey butter chips.</p><p>These snacks became popular through K-pop fans and social media. People want to try what their favorite K-pop stars eat.</p><p>Korea exports billions of dollars worth of snacks every year.</p>"}, {"id": "kinder-39", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Doenjang Jjigae Is Korea's Comfort Food", "byline": "Our Nation · Food & Taste", "preview": "Doenjang jjigae is a soybean paste stew.", "body": "<p>Doenjang jjigae is a soybean paste stew. It is one of the most common foods eaten in Korea.</p><p>It is made with tofu, vegetables, and fermented soybean paste. Koreans eat it for breakfast, lunch, and dinner.</p><p>Doenjang jjigae is considered very healthy. It is full of protein and good for your gut.</p>"}, {"id": "kinder-40", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Mukbang Videos Are a Global Hit", "byline": "Our Nation · Food & Taste", "preview": "Mukbang is a Korean word that means eating broadcast.", "body": "<p>Mukbang is a Korean word that means eating broadcast. In mukbang videos, people eat large amounts of food on camera.</p><p>These videos started in Korea but are now popular worldwide. Millions of people watch mukbang on YouTube and social media.</p><p>Korean food became more famous because of mukbang. Many viewers want to try the foods they see.</p>"}, {"id": "kinder-41", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Chuseok Is Korea's Biggest Holiday", "byline": "Our Nation · Culture & History", "preview": "Chuseok is one of the most important holidays in Korea.", "body": "<p>Chuseok is one of the most important holidays in Korea. It is like a harvest festival.</p><p>Families gather together to share food and give thanks. They make a special rice cake called songpyeon.</p><p>People also visit their ancestors' graves to show respect. Chuseok is a time for family and tradition.</p>"}, {"id": "kinder-42", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Seollal Is Korean New Year", "byline": "Our Nation · Culture & History", "preview": "Seollal is the Korean Lunar New Year.", "body": "<p>Seollal is the Korean Lunar New Year. It is one of the biggest holidays in Korea.</p><p>Families wear hanbok and bow deeply to their elders. This is called sebae.</p><p>Elders give children money as a gift. People eat tteokguk, a rice cake soup, on Seollal.</p><p>Eating it means you become one year older.</p>"}, {"id": "kinder-43", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Gyeongbokgung Was Built 600 Years Ago", "byline": "Our Nation · Culture & History", "preview": "Gyeongbokgung Palace is located in Seoul.", "body": "<p>Gyeongbokgung Palace is located in Seoul. It was built over 600 years ago during the Joseon Dynasty.</p><p>The palace has many beautiful buildings and gardens. It was once home to Korean kings and queens.</p><p>Today, many tourists visit Gyeongbokgung. They can watch the royal guard-changing ceremony every day.</p>"}, {"id": "kinder-44", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Hanbok Is Korea's Traditional Clothing", "byline": "Our Nation · Culture & History", "preview": "Hanbok is the traditional clothing of Korea.", "body": "<p>Hanbok is the traditional clothing of Korea. It has bright colors and graceful lines.</p><p>Koreans wear hanbok on special days like Seollal and Chuseok. Some young people wear it for fun photos.</p><p>Many tourists rent hanbok near palaces in Seoul. It is a popular way to experience Korean culture.</p>"}, {"id": "kinder-45", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Haenyeo Are Korea's Diving Women", "byline": "Our Nation · Culture & History", "preview": "Haenyeo are female divers from Jeju Island.", "body": "<p>Haenyeo are female divers from Jeju Island. They dive deep into the sea to collect seafood.</p><p>Haenyeo do not use oxygen tanks. They hold their breath for a long time underwater.</p><p>Their tradition is over 1,500 years old. UNESCO recognized haenyeo as an important cultural heritage.</p>"}, {"id": "kinder-46", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Bulguksa Temple Is a UNESCO World Heritage Site", "byline": "Our Nation · Culture & History", "preview": "Bulguksa is a famous Buddhist temple in Gyeongju.", "body": "<p>Bulguksa is a famous Buddhist temple in Gyeongju. It was built over 1,300 years ago.</p><p>The temple has beautiful stone pagodas and bridges. It is one of Korea's most treasured historical sites.</p><p>UNESCO named Bulguksa a World Heritage Site. Millions of tourists visit it every year.</p>"}, {"id": "kinder-47", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Taekkyeon Is an Ancient Korean Martial Art", "byline": "Our Nation · Culture & History", "preview": "Taekkyeon is a traditional Korean martial art.", "body": "<p>Taekkyeon is a traditional Korean martial art. It uses graceful, dance-like movements.</p><p>It is different from taekwondo. Taekkyeon focuses on fluid kicks and body movements.</p><p>UNESCO recognized taekkyeon as an intangible cultural heritage. Korean masters teach it to keep the tradition alive.</p>"}, {"id": "kinder-48", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Ganggangsullae Is a Traditional Dance", "byline": "Our Nation · Culture & History", "preview": "Ganggangsullae is a traditional Korean folk dance.", "body": "<p>Ganggangsullae is a traditional Korean folk dance. Women hold hands and dance in a circle under the full moon.</p><p>It is performed during Chuseok and other celebrations. The dance celebrates a good harvest.</p><p>Ganggangsullae is also a UNESCO Intangible Cultural Heritage. It is still performed at festivals today.</p>"}, {"id": "kinder-49", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Joseon Dynasty Lasted 500 Years", "byline": "Our Nation · Culture & History", "preview": "The Joseon Dynasty was one of the longest dynasties in history.", "body": "<p>The Joseon Dynasty was one of the longest dynasties in history. It lasted for about 500 years.</p><p>During this time, Korea developed many important things. The Korean alphabet, Hangeul, was created during the Joseon period.</p><p>Many palaces and cultural traditions from the Joseon era are still important today.</p>"}, {"id": "kinder-50", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "King Sejong Created Hangeul", "byline": "Our Nation · Culture & History", "preview": "King Sejong the Great was a famous Korean king.", "body": "<p>King Sejong the Great was a famous Korean king. He created the Korean alphabet, Hangeul, in 1443.</p><p>Before Hangeul, Koreans used Chinese characters. These were very difficult to learn.</p><p>King Sejong wanted everyone to be able to read and write. Hangeul has only 24 letters and is easy to learn.</p>"}, {"id": "kinder-51", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Andong Hahoe Village Preserves Old Korea", "byline": "Our Nation · Culture & History", "preview": "Andong Hahoe Village is a traditional Korean village.", "body": "<p>Andong Hahoe Village is a traditional Korean village. It looks like Korea did hundreds of years ago.</p><p>Old houses and thatched roofs can be seen everywhere. Families have lived there for generations.</p><p>It is a UNESCO World Heritage Site. Many tourists visit to experience traditional Korean life.</p>"}, {"id": "kinder-52", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Traditional Music Is Called Gugak", "byline": "Our Nation · Culture & History", "preview": "Gugak is the traditional music of Korea.", "body": "<p>Gugak is the traditional music of Korea. It uses instruments like the gayageum and haegeum.</p><p>Gugak has been played for thousands of years. It tells stories of Korea's history and nature.</p><p>Today, some musicians mix gugak with modern music. This creates a new and exciting sound.</p>"}, {"id": "kinder-53", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "The Turtle Ship Was a Great Invention", "byline": "Our Nation · Culture & History", "preview": "The turtle ship was a type of warship used in Korea.", "body": "<p>The turtle ship was a type of warship used in Korea. It was built during the Joseon Dynasty.</p><p>It had an iron-covered roof shaped like a turtle shell. This protected the sailors inside from enemy attacks.</p><p>Admiral Yi Sun-sin used turtle ships to win many battles. He is one of Korea's greatest heroes.</p>"}, {"id": "kinder-54", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Jongmyo Shrine Honors Korean Ancestors", "byline": "Our Nation · Culture & History", "preview": "Jongmyo Shrine is a special place in Seoul.", "body": "<p>Jongmyo Shrine is a special place in Seoul. It honors the royal ancestors of the Joseon Dynasty.</p><p>A special ceremony is held there every year. People wear traditional clothing and perform ancient rituals.</p><p>Jongmyo Shrine is a UNESCO World Heritage Site. It is one of the best-preserved royal shrines in Asia.</p>"}, {"id": "kinder-55", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Dolmen Stones Show Korea's Ancient Past", "byline": "Our Nation · Culture & History", "preview": "Dolmens are large stone structures built thousands of years ago.", "body": "<p>Dolmens are large stone structures built thousands of years ago. Korea has the most dolmens in the world.</p><p>They were used as tombs for important people. Ancient Koreans built them to honor the dead.</p><p>Korea's dolmens are UNESCO World Heritage Sites. They show how advanced early Korean civilization was.</p>"}, {"id": "kinder-56", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Hanji Is Korea's Traditional Paper", "byline": "Our Nation · Culture & History", "preview": "Hanji is a traditional Korean paper made from mulberry trees.", "body": "<p>Hanji is a traditional Korean paper made from mulberry trees. It is very strong and can last for centuries.</p><p>Ancient Koreans used hanji to write books and make art. It was also used to make fans, kites, and windows.</p><p>Today, hanji is still made by hand by skilled craftspeople. It is considered a precious cultural treasure.</p>"}, {"id": "kinder-57", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Changdeokgung Has a Secret Garden", "byline": "Our Nation · Culture & History", "preview": "Changdeokgung is a royal palace in Seoul.", "body": "<p>Changdeokgung is a royal palace in Seoul. It was built during the Joseon Dynasty.</p><p>Behind the palace, there is a beautiful secret garden called Huwon. It has ponds, pavilions, and old trees.</p><p>Changdeokgung is a UNESCO World Heritage Site. Visitors can tour the secret garden on special guided tours.</p>"}, {"id": "kinder-58", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Dano Festival Celebrates Spring", "byline": "Our Nation · Culture & History", "preview": "Dano is a traditional Korean holiday.", "body": "<p>Dano is a traditional Korean holiday. It is celebrated on the fifth day of the fifth lunar month.</p><p>People wash their hair with water boiled with iris flowers. They also enjoy folk games and festivities.</p><p>One popular activity is swinging on a traditional swing called a geune. Women dress in colorful hanbok for the day.</p>"}, {"id": "kinder-59", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Suwon Hwaseong Is a Beautiful Fortress", "byline": "Our Nation · Culture & History", "preview": "Hwaseong Fortress is located in Suwon, Korea.", "body": "<p>Hwaseong Fortress is located in Suwon, Korea. It was built over 200 years ago.</p><p>The fortress walls stretch for about 5. 7 kilometers.</p><p>It has gates, towers, and command posts. Hwaseong is a UNESCO World Heritage Site.</p><p>Visitors can walk along the walls and enjoy the view.</p>"}, {"id": "kinder-60", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Pansori Is Korea's Traditional Opera", "byline": "Our Nation · Culture & History", "preview": "Pansori is a type of traditional Korean music performance.", "body": "<p>Pansori is a type of traditional Korean music performance. One singer tells a long story through singing and speaking.</p><p>The performance can last for hours. A drummer sits beside the singer and keeps the rhythm.</p><p>Pansori is recognized by UNESCO as a cultural heritage. Korean masters work hard to keep this tradition alive.</p>"}, {"id": "kinder-61", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Wins Gold in Archery Again", "byline": "Our Nation · Sports", "preview": "Korea is one of the best archery nations in the world.", "body": "<p>Korea is one of the best archery nations in the world. Korean archers have won gold medals at many Olympic Games.</p><p>Korean athletes train very hard from a young age. They practice for many hours every day.</p><p>At the last Olympics, Korea won three gold medals in archery. The whole country celebrated.</p>"}, {"id": "kinder-62", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Taekwondo Is Now an Olympic Sport", "byline": "Our Nation · Sports", "preview": "Taekwondo is a Korean martial art.", "body": "<p>Taekwondo is a Korean martial art. It became an official Olympic sport in 2000.</p><p>Athletes score points by kicking their opponent. Fast and powerful kicks earn the most points.</p><p>Korea always sends strong taekwondo athletes to the Olympics. They have won many gold medals over the years.</p>"}, {"id": "kinder-63", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Son Heung-min Is Korea's Soccer Star", "byline": "Our Nation · Sports", "preview": "Son Heung-min is a famous Korean soccer player.", "body": "<p>Son Heung-min is a famous Korean soccer player. He plays for Tottenham Hotspur in England.</p><p>He is known for his speed and powerful shots. He has scored many goals in the Premier League.</p><p>Son is also the captain of the Korean national team. Young Koreans look up to him as a sports hero.</p>"}, {"id": "kinder-64", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Hosted the 2018 Winter Olympics", "byline": "Our Nation · Sports", "preview": "The 2018 Winter Olympics were held in Pyeongchang, Korea.", "body": "<p>The 2018 Winter Olympics were held in Pyeongchang, Korea. Athletes from around the world came to compete.</p><p>Korea built new stadiums and facilities for the games. The opening ceremony was very impressive.</p><p>Korean athletes won many medals. The games helped show the world how modern Korea has become.</p>"}, {"id": "kinder-65", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean E-sports Players Are World Champions", "byline": "Our Nation · Sports", "preview": "Korea is known as the home of e-sports.", "body": "<p>Korea is known as the home of e-sports. Korean gamers are among the best in the world.</p><p>Games like League of Legends and StarCraft are very popular in Korea. Professional players train like athletes.</p><p>Korean teams have won world championships many times. E-sports arenas in Korea are always full of fans.</p>"}, {"id": "kinder-66", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea's Curling Team Surprises the World", "byline": "Our Nation · Sports", "preview": "At the 2018 Winter Olympics in Pyeongchang, Korea's women's curling team won a silver medal.", "body": "<p>At the 2018 Winter Olympics in Pyeongchang, Korea's women's curling team won a silver medal. The team members were from a small town called Uiseong.</p><p>They were not very famous before the games. Their success surprised everyone.</p><p>Koreans started calling them the Garlic Girls because Uiseong is famous for garlic.</p>"}, {"id": "kinder-67", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Baseball Is Very Popular", "byline": "Our Nation · Sports", "preview": "Baseball is one of the most popular sports in Korea.", "body": "<p>Baseball is one of the most popular sports in Korea. The Korea Baseball Organization, or KBO, has many fans.</p><p>Stadiums are always full of cheering fans. Korean baseball games are known for being very lively and fun.</p><p>Some Korean players have gone on to play in Major League Baseball in the United States.</p>"}, {"id": "kinder-68", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Short-Track Speed Skaters Shine", "byline": "Our Nation · Sports", "preview": "Korea is one of the top nations in short-track speed skating.", "body": "<p>Korea is one of the top nations in short-track speed skating. Korean skaters are fast and skilled.</p><p>Short-track skating involves racing around a small oval track. Falls are common because the track is very tight.</p><p>Korea has won many Olympic gold medals in this sport. Short-track skating is one of Korea's most beloved winter sports.</p>"}, {"id": "kinder-69", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Park Tae-hwan Is Korea's Swimming Legend", "byline": "Our Nation · Sports", "preview": "Park Tae-hwan is a famous Korean swimmer.", "body": "<p>Park Tae-hwan is a famous Korean swimmer. He won a gold medal at the 2008 Beijing Olympics.</p><p>He was the first Korean swimmer to win an Olympic gold medal. His success inspired many young Koreans to swim.</p><p>Park trained very hard every day. He became one of the best swimmers in the world.</p>"}, {"id": "kinder-70", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Golfers Win on the World Stage", "byline": "Our Nation · Sports", "preview": "Korean golfers are among the best in the world.", "body": "<p>Korean golfers are among the best in the world. Players like Ko Jin-young have won many top tournaments.</p><p>Korean women golfers are especially strong. They often rank at the top of the world golf rankings.</p><p>Many Korean golfers train from a young age. Their hard work and dedication have made Korea proud.</p>"}, {"id": "kinder-71", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "The 2002 World Cup Made Korea Proud", "byline": "Our Nation · Sports", "preview": "Korea co-hosted the 2002 FIFA World Cup with Japan.", "body": "<p>Korea co-hosted the 2002 FIFA World Cup with Japan. It was a very special event for Korea.</p><p>The Korean national team reached the semifinals. It was the best result ever for an Asian team.</p><p>Millions of Koreans gathered in the streets to cheer. The red-clad fans became famous around the world.</p>"}, {"id": "kinder-72", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Athletes Train at Top Centers", "byline": "Our Nation · Sports", "preview": "Korea has world-class sports training centers.", "body": "<p>Korea has world-class sports training centers. The Jincheon National Training Center is one of the best.</p><p>Athletes live and train there together. They receive support from coaches, doctors, and nutritionists.</p><p>This system has helped Korea win many Olympic medals. The government invests a lot in training Korean athletes.</p>"}, {"id": "kinder-73", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Judo Champions Win Big", "byline": "Our Nation · Sports", "preview": "Judo is a popular sport in Korea.", "body": "<p>Judo is a popular sport in Korea. Korean judo athletes have won many medals at the Olympics and World Championships.</p><p>Judo requires strength, skill, and strategy. Athletes train for years to become champions.</p><p>Young Koreans learn judo at school and sports clubs. It teaches them discipline and respect.</p>"}, {"id": "kinder-74", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Ssireum Is Korea's Traditional Wrestling", "byline": "Our Nation · Sports", "preview": "Ssireum is a traditional Korean wrestling sport.", "body": "<p>Ssireum is a traditional Korean wrestling sport. Two competitors hold each other's cloth belt and try to throw each other down.</p><p>Ssireum has been played in Korea for thousands of years. It was a popular sport at village festivals.</p><p>Today, ssireum competitions are still held. It is an important part of Korean sports heritage.</p>"}, {"id": "kinder-75", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Sends Athletes to the Paralympics", "byline": "Our Nation · Sports", "preview": "Korea sends athletes to the Paralympic Games.", "body": "<p>Korea sends athletes to the Paralympic Games. These are sports competitions for athletes with disabilities.</p><p>Korean Paralympic athletes train just as hard as Olympic athletes. They show great courage and determination.</p><p>Korea has won many Paralympic medals. These athletes inspire millions of people around the world.</p>"}, {"id": "kinder-76", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Volleyball Teams Are Rising", "byline": "Our Nation · Sports", "preview": "Volleyball is a popular sport in Korea.", "body": "<p>Volleyball is a popular sport in Korea. Both men's and women's teams have improved a lot in recent years.</p><p>The women's team made it to the semifinals at the Tokyo Olympics in 2021. It was a historic achievement.</p><p>Players like Kim Yeon-koung have become national heroes. Young Koreans are inspired to play volleyball.</p>"}, {"id": "kinder-77", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Marathoners Run for Glory", "byline": "Our Nation · Sports", "preview": "Korea has a proud marathon history.", "body": "<p>Korea has a proud marathon history. Korean runners have won medals at major marathons around the world.</p><p>The Seoul International Marathon is one of the biggest races in Asia. Thousands of runners join each year.</p><p>Marathon running requires months of hard training. Korean runners show great endurance and strength.</p>"}, {"id": "kinder-78", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "E-sports Stadiums Fill Up in Korea", "byline": "Our Nation · Sports", "preview": "Korea has special stadiums just for e-sports.", "body": "<p>Korea has special stadiums just for e-sports. Fans fill these arenas to watch professional gamers compete.</p><p>The atmosphere is like a regular sports stadium. Fans cheer loudly for their favorite teams and players.</p><p>E-sports events in Korea are broadcast on TV and online. Millions of people watch from home.</p>"}, {"id": "kinder-79", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Figure Skaters Dazzle the World", "byline": "Our Nation · Sports", "preview": "Korea has produced world-class figure skaters.", "body": "<p>Korea has produced world-class figure skaters. Kim Yuna is one of the most famous.</p><p>She won a gold medal at the 2010 Vancouver Winter Olympics. Her performance was called perfect by many judges.</p><p>Kim Yuna inspired a generation of young Korean skaters. Figure skating became very popular in Korea after her win.</p>"}, {"id": "kinder-80", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Sports Day Is Celebrated in Korean Schools", "byline": "Our Nation · Sports", "preview": "Many Korean schools hold a special Sports Day event.", "body": "<p>Many Korean schools hold a special Sports Day event. Students compete in races, tug-of-war, and team games.</p><p>It is one of the most exciting days of the school year. Families come to watch and cheer.</p><p>Sports Day teaches teamwork and healthy competition. Students have fun and make great memories.</p>"}, {"id": "kinder-81", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Launches Its Own Space Rocket", "byline": "Our Nation · Science & Tech", "preview": "Korea successfully launched its own space rocket called Nuri.", "body": "<p>Korea successfully launched its own space rocket called Nuri. It was built by Korean scientists.</p><p>Nuri carried satellites into orbit around Earth. It was a big step for Korea's space program.</p><p>Korea joined a small group of countries that can launch rockets on their own. Scientists celebrated the success.</p>"}, {"id": "kinder-82", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Samsung Is a World-Leading Tech Company", "byline": "Our Nation · Science & Tech", "preview": "Samsung is one of the world's most famous technology companies.", "body": "<p>Samsung is one of the world's most famous technology companies. It is based in Korea.</p><p>Samsung makes smartphones, TVs, and computer chips. People all over the world use Samsung products.</p><p>Samsung invests a lot in research and new technology. It helps Korea become a global technology leader.</p>"}, {"id": "kinder-83", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Has the Fastest Internet in the World", "byline": "Our Nation · Science & Tech", "preview": "Korea is famous for having very fast internet.", "body": "<p>Korea is famous for having very fast internet. Almost every home and public place has high-speed internet.</p><p>Fast internet helps people work, study, and have fun online. Korean students use the internet to learn every day.</p><p>Korea was one of the first countries to offer 5G internet. This makes phones and devices work very fast.</p>"}, {"id": "kinder-84", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Scientists Develop New Battery", "byline": "Our Nation · Science & Tech", "preview": "Korean scientists have developed a new type of battery.", "body": "<p>Korean scientists have developed a new type of battery. It charges much faster than regular batteries.</p><p>The new battery can be used in electric cars and smartphones. It could change the way we use technology.</p><p>Korea invests a lot in energy research. Scientists work hard to find better ways to store power.</p>"}, {"id": "kinder-85", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "LG Makes Smart Home Devices", "byline": "Our Nation · Science & Tech", "preview": "LG is a famous Korean technology company.", "body": "<p>LG is a famous Korean technology company. It makes home appliances and electronics.</p><p>LG makes smart refrigerators, washing machines, and TVs. These devices can be controlled with a smartphone.</p><p>Smart home devices make life easier and more convenient. LG sells its products in over 100 countries.</p>"}, {"id": "kinder-86", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Robots Help in Hospitals", "byline": "Our Nation · Science & Tech", "preview": "Korean engineers have developed robots that help in hospitals.", "body": "<p>Korean engineers have developed robots that help in hospitals. These robots deliver medicine and supplies.</p><p>They move through hospital hallways on their own. This saves time for doctors and nurses.</p><p>Korea is a leader in robot technology. More hospitals are using robots to improve patient care.</p>"}, {"id": "kinder-87", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Plants Trees to Fight Climate Change", "byline": "Our Nation · Science & Tech", "preview": "Korea is working hard to fight climate change.", "body": "<p>Korea is working hard to fight climate change. The government has started a big tree-planting program.</p><p>Millions of trees are planted across the country each year. Trees help clean the air and reduce carbon dioxide.</p><p>Schools also teach students about the environment. Young Koreans learn how to protect the planet.</p>"}, {"id": "kinder-88", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Students Excel in Math and Science", "byline": "Our Nation · Science & Tech", "preview": "Korean students are among the best in the world at math and science.", "body": "<p>Korean students are among the best in the world at math and science. They score very high on international tests.</p><p>Students study hard and attend extra classes after school. Education is very important in Korean culture.</p><p>The government supports science education. Many Korean students go on to become engineers and scientists.</p>"}, {"id": "kinder-89", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Hyundai Makes Electric Cars", "byline": "Our Nation · Science & Tech", "preview": "Hyundai is a famous Korean car company.", "body": "<p>Hyundai is a famous Korean car company. They now make popular electric cars.</p><p>Their electric car, the IONIQ 5, won many awards around the world. It is fast, quiet, and good for the environment.</p><p>Hyundai is investing in the future of clean transportation. They plan to make more electric vehicles each year.</p>"}, {"id": "kinder-90", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Builds Smart Cities", "byline": "Our Nation · Science & Tech", "preview": "Korea is building smart cities where technology makes life easier.", "body": "<p>Korea is building smart cities where technology makes life easier. Songdo is one example of a smart city near Seoul.</p><p>In Songdo, sensors collect data to manage traffic, energy, and water. Everything is connected to the internet.</p><p>Smart cities help save energy and reduce pollution. Korea hopes to build more smart cities in the future.</p>"}, {"id": "kinder-91", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Scientists Study the Deep Sea", "byline": "Our Nation · Science & Tech", "preview": "Korean scientists are exploring the deep ocean.", "body": "<p>Korean scientists are exploring the deep ocean. They use special submarines and underwater robots.</p><p>The deep sea is full of mysteries. Scientists look for new sea creatures and resources on the ocean floor.</p><p>Korea has a long coastline and depends on the sea. Ocean research is very important for Korea's future.</p>"}, {"id": "kinder-92", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "AI Technology Grows Fast in Korea", "byline": "Our Nation · Science & Tech", "preview": "Artificial intelligence, or AI, is growing fast in Korea.", "body": "<p>Artificial intelligence, or AI, is growing fast in Korea. Korean companies use AI in many products and services.</p><p>AI helps with things like translation, shopping, and health care. It makes daily life more convenient.</p><p>The Korean government is investing in AI research. Korea wants to become a global leader in AI technology.</p>"}, {"id": "kinder-93", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Develops New Medical Technology", "byline": "Our Nation · Science & Tech", "preview": "Korea is a leader in medical technology.", "body": "<p>Korea is a leader in medical technology. Korean scientists have developed new tools to diagnose and treat diseases.</p><p>New AI programs can detect cancer earlier than before. This helps doctors save more lives.</p><p>Korea exports medical technology to many countries. Its innovations are improving health care worldwide.</p>"}, {"id": "kinder-94", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Solar Energy Is Growing in Korea", "byline": "Our Nation · Science & Tech", "preview": "Korea is increasing its use of solar energy.", "body": "<p>Korea is increasing its use of solar energy. Solar panels are being installed on buildings and in open fields.</p><p>Solar energy comes from the sun and does not pollute the air. It is a clean and renewable source of power.</p><p>The Korean government wants to use more renewable energy by 2030. Solar energy will play a big part in this plan.</p>"}, {"id": "kinder-95", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Coding Education Starts Early", "byline": "Our Nation · Science & Tech", "preview": "Korea teaches coding to students starting in elementary school.", "body": "<p>Korea teaches coding to students starting in elementary school. Coding is now part of the national curriculum.</p><p>Students learn to create simple programs and games. These skills help them think logically and solve problems.</p><p>The government believes coding skills are important for the future. Korea wants to prepare students for a digital world.</p>"}, {"id": "kinder-96", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Scientists Clone an Arctic Wolf", "byline": "Our Nation · Science & Tech", "preview": "Korean scientists successfully cloned an Arctic wolf.", "body": "<p>Korean scientists successfully cloned an Arctic wolf. It was the first time this type of wolf was cloned.</p><p>The cloned wolf was born healthy and is being raised by scientists. This could help save endangered animals in the future.</p><p>Korea is known for its advanced cloning research. Scientists hope this technology can protect wildlife.</p>"}, {"id": "kinder-97", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Recycles More Than Most Countries", "byline": "Our Nation · Science & Tech", "preview": "Korea has one of the best recycling systems in the world.", "body": "<p>Korea has one of the best recycling systems in the world. People must separate their waste into different bins.</p><p>Food waste, paper, plastic, and glass are all recycled separately. Throwing away garbage incorrectly can result in a fine.</p><p>This system has greatly reduced the amount of trash in Korea. The country is a model for other nations to follow.</p>"}, {"id": "kinder-98", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Tech Companies Lead in Semiconductors", "byline": "Our Nation · Science & Tech", "preview": "Korea is one of the world's top producers of semiconductors.", "body": "<p>Korea is one of the world's top producers of semiconductors. These tiny chips power computers, phones, and TVs.</p><p>Companies like Samsung and SK Hynix make billions of chips every year. Many countries rely on Korean semiconductors.</p><p>Semiconductors are very important for modern technology. Korea's chip industry is one of the most important in the world.</p>"}, {"id": "kinder-99", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korea Opens First Hydrogen-Powered Train", "byline": "Our Nation · Science & Tech", "preview": "Korea launched its first hydrogen-powered train.", "body": "<p>Korea launched its first hydrogen-powered train. The train runs on hydrogen fuel and produces no pollution.</p><p>It is faster and quieter than regular trains. The only waste it produces is clean water.</p><p>Korea hopes to replace older trains with hydrogen trains. This will help reduce carbon emissions and protect the environment.</p>"}, {"id": "kinder-100", "level": "LEVEL 1", "category": "KINDER", "issue": "kinder-our-nation", "issueLabel": "Our Nation", "date": "2026. 4. 28.", "title": "Korean Students Win International Science Olympiad", "byline": "Our Nation · Science & Tech", "preview": "Korean students won top prizes at the International Science Olympiad.", "body": "<p>Korean students won top prizes at the International Science Olympiad. Teams competed in biology, chemistry, and physics.</p><p>The students solved very difficult problems. They trained with expert teachers for many months.</p><p>Korea is proud of its science students. Their achievements show the strength of Korean education.</p>"}];
+let all=[], currentTab='all', isAdmin=false;
 
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzK-H6cBSUBEA7FGbMOoleEzFHfRz1Z0eTNLInjLZGqIwu2KgB5KI2wVf-fHXLIxaW7m4IkBbPedMp/pub?gid=0&single=true&output=csv';
+const dn=['일','월','화','수','목','금','토'], nd=new Date();
+document.getElementById('today-date').textContent=
+  `${nd.getFullYear()}.${String(nd.getMonth()+1).padStart(2,'0')}.${String(nd.getDate()).padStart(2,'0')} (${dn[nd.getDay()]})`;
 
-let articles = [];
-let issues = [];
-let currentGrade = 'kinder';
-let currentPage = 'home';
-let prevPage = 'home';
-let currentIssue = '';
+// 관리자
+function handleAdmin(){
+  if(isAdmin){doLogout();return;}
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('pw').value='';
+  document.getElementById('login-err').textContent='';
+  setTimeout(()=>document.getElementById('pw').focus(),80);
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');}
+function tryLogin(){
+  if(document.getElementById('pw').value===ADMIN_PW){
+    isAdmin=true;closeModal();
+    document.getElementById('admin-panel').classList.add('show');
+    const b=document.getElementById('admin-btn');
+    b.textContent='✅ 관리자 ON';b.classList.add('on');
+  }else{
+    document.getElementById('login-err').textContent='❌ 비밀번호가 올바르지 않습니다.';
+    document.getElementById('pw').value='';document.getElementById('pw').focus();
+  }
+}
+function doLogout(){
+  isAdmin=false;
+  document.getElementById('admin-panel').classList.remove('show');
+  const b=document.getElementById('admin-btn');b.textContent='⚙ 관리자';b.classList.remove('on');
+}
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
 
-const CAT_MAP = {kinder:'KINDER', kids:'KIDS', junior:'JUNIOR', times:'TIMES'};
-const svgImg = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.35"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+// 기사 상세
+function openArticle(idx){
+  const a=all[idx];
+  const bc=MEDIA_CLS[a.media]||'', ml=MEDIA_LBL[a.media]||'';
+  const lines=(a.body||'').split('\n');
+  const main=[], vocab=[];
+  let vs=false;
+  for(const l of lines){if(l.trim().startsWith('*'))vs=true;if(vs)vocab.push(l);else main.push(l);}
+  const imgH=a.img&&a.img.startsWith('http')
+    ?`<img class="article-hero" src="${a.img}" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=\\'article-hero-ph\\'>📷</div>'">`
+    :`<div class="article-hero-ph">📷</div>`;
+  document.getElementById('article-body-content').innerHTML=`
+    <div class="article-header">
+      <div class="article-badges">
+        <span class="mbadge ${bc}">${ml}</span>
+        ${a.lv?`<span class="lvbadge">${a.lv}</span>`:''}
+        ${a.sec?`<span style="font-size:11px;color:var(--muted);font-weight:600">${a.sec}</span>`:''}
+      </div>
+      <div class="article-title">${a.title}</div>
+      <div class="article-meta">
+        <span>📅 ${a.date||''}</span>
+        <span>용훈_Times</span>
+      </div>
+    </div>
+    <div class="article-body-wrap">
+      <div class="article-img-col">${imgH}</div>
+      <div class="article-text-col">
+        <div class="article-body">
+          <div>${main.join('\n').trim()}</div>
+          ${vocab.length?`<div class="vocab">${vocab.join('\n').trim()}</div>`:''}
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('article-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeArticle(e){if(e.target===document.getElementById('article-overlay'))closeArticleBtn();}
+function closeArticleBtn(){document.getElementById('article-overlay').classList.remove('show');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeArticleBtn();});
 
+// ── 완전한 CSV 파서 (줄바꿈 포함 셀 처리) ──
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
-  return lines.slice(1).map((line, idx) => {
-    const values = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') { inQuote = !inQuote; }
-      else if (ch === ',' && !inQuote) { values.push(cur); cur = ''; }
-      else { cur += ch; }
-    }
-    values.push(cur);
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (values[i] || '').replace(/^"|"$/g, '').trim());
-    obj.id = 'csv-' + idx;
-    if (obj.issue && !obj.issueLabel) { obj.issueLabel = obj.issue + '호'; }
-    if (!obj.issue && obj.date) {
-      const parts = obj.date.split('.').map(s => s.trim()).filter(s => s);
-      const year = parts[0] || '2026';
-      const month = (parts[1] || '1').padStart(2, '0');
-      obj.issue = year + '-' + month;
-      obj.issueLabel = year + '년 ' + parseInt(month) + '월호';
-    }
-    return obj;
-  }).filter(a => a.title);
-}
+  const records = [];
+  let i = 0;
+  const len = text.length;
 
-async function loadArticles() {
-  try {
-    const res = await fetch(CSV_URL);
-    const text = await res.text();
-    const csvData = parseCSV(text);
-    const nonKinder = csvData.filter(a => (a.category||'').toUpperCase() !== 'KINDER');
-    articles = [...KINDER_ARTICLES, ...nonKinder];
-  } catch(e) {
-    articles = [...KINDER_ARTICLES];
+  // 첫 번째 행(헤더) 스킵
+  let headerDone = false;
+  let currentRecord = [];
+  let field = '';
+  let inQuotes = false;
+
+  while (i < len) {
+    const ch = text[i];
+
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < len && text[i+1] === '"') {
+          // 이스케이프된 따옴표
+          field += '"';
+          i += 2;
+        } else {
+          // 닫는 따옴표
+          inQuotes = false;
+          i++;
+        }
+      } else {
+        field += ch;
+        i++;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+        i++;
+      } else if (ch === ',') {
+        currentRecord.push(field.trim());
+        field = '';
+        i++;
+      } else if (ch === '\r' || ch === '\n') {
+        // 줄 끝
+        if (ch === '\r' && i + 1 < len && text[i+1] === '\n') i++;
+        currentRecord.push(field.trim());
+        field = '';
+        if (!headerDone) {
+          headerDone = true;
+        } else if (currentRecord.some(c => c)) {
+          records.push(currentRecord);
+        }
+        currentRecord = [];
+        i++;
+      } else {
+        field += ch;
+        i++;
+      }
+    }
   }
-  const issueMap = {};
-  articles.forEach(a => {
-    const key = a.issue;
-    if (key && !issueMap[key]) {
-      issueMap[key] = {
-        id: key,
-        label: a.issueLabel || key,
-        title: (a.issueLabel || key) + ' 기사 목록',
-        date: '발행일: ' + (a.date || ''),
-        year: (a.date || '2026').substring(0, 4),
-        month: parseInt((a.date || '2026.01').split('.')[1]) || 1,
-        category: (a.category || '').toUpperCase()
-      };
+  // 마지막 레코드
+  if (field || currentRecord.length > 0) {
+    currentRecord.push(field.trim());
+    if (headerDone && currentRecord.some(c => c)) {
+      records.push(currentRecord);
     }
-  });
-  issues = Object.values(issueMap);
-}
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  currentPage = id;
-  window.scrollTo(0, 0);
-}
-
-function goIssueById(btn) {
-  goIssue(btn.dataset.id);
-}
-
-function goHome() {
-  const cat = CAT_MAP[currentGrade];
-  const filtered = articles.filter(a => (a.category||'').toUpperCase() === cat);
-  const gradeIssues = issues.filter(i => i.category === cat);
-
-  const btnWrap = document.getElementById('issue-btn-wrap');
-  btnWrap.innerHTML = gradeIssues.map(i =>
-    '<button class="issue-btn" data-id="' + i.id + '" onclick="goIssueById(this)">' + i.label + '</button>'
-  ).join('');
-  if (gradeIssues[0]) {
-    const btn = document.querySelector('[data-id="' + gradeIssues[0].id + '"]');
-    if (btn) btn.classList.add('active');
-    currentIssue = gradeIssues[0].id;
   }
-  renderFeatured(filtered[0]);
-  renderGrid(filtered.slice(1, 7));
-  showPage('home');
+  return records;
 }
 
-function renderFeatured(a) {
-  const wrap = document.getElementById('featured-wrap');
-  if (!a) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">📰</div><p>기사를 등록해 주세요.</p></div>'; return; }
-  wrap.innerHTML =
-    '<div class="featured" onclick="goArticleById(this)" data-id="' + a.id + '">' +
-    '<div class="featured-img"><div class="img-placeholder">' + svgImg + '<span>대표 기사 이미지</span></div></div>' +
-    '<div class="featured-body">' +
-    '<span class="issue-tag">' + (a.issueLabel||'') + '</span>' +
-    '<h2>' + a.title + '</h2>' +
-    '<p class="byline">' + (a.byline||'') + '</p>' +
-    '<p>' + (a.preview||'') + '</p>' +
-    '<span class="read-more">Read Full Article →</span>' +
-    '</div></div>';
+async function fetchTab(tab) {
+  const res = await fetch(tab.url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  const rows = parseCSV(text);
+  return rows
+    .filter(cols => cols[3] && cols[3].trim()) // 제목 있는 것만
+    .map(cols => ({
+      dc:    cols[0]||'',
+      sec:   cols[1]||'',
+      lv:    cols[2]||'',
+      title: cols[3]||'',
+      date:  cols[4]||'',
+      body:  cols[5]||'',
+      img:   cols[6]||'',
+      url:   cols[7]||'',
+      media: tab.key
+    }));
 }
 
-function renderGrid(list) {
-  const grid = document.getElementById('article-grid');
-  if (!list.length) { grid.innerHTML = ''; return; }
-  grid.innerHTML = list.map(a =>
-    '<div class="article-card" onclick="goArticleById(this)" data-id="' + a.id + '">' +
-    '<div class="card-img">' + svgImg + '</div>' +
-    '<div class="card-body">' +
-    '<p class="card-issue">' + (a.byline||'') + '</p>' +
-    '<h3>' + a.title + '</h3>' +
-    '<p>' + (a.preview||'') + '</p>' +
-    '</div></div>'
-  ).join('');
+async function loadAll() {
+  all = [];
+  document.getElementById('spin-area').style.display = 'flex';
+  for (const tab of TABS) {
+    document.getElementById('spin-msg').textContent = `${tab.label} 불러오는 중...`;
+    try {
+      const rows = await fetchTab(tab);
+      rows.sort((a,b)=>(b.dc>a.dc?1:b.dc<a.dc?-1:0));
+      all = all.concat(rows);
+      document.getElementById('b-' + tab.key).textContent = rows.length;
+    } catch(e) {
+      console.error(tab.label, e);
+      document.getElementById('b-' + tab.key).textContent = '!';
+    }
+  }
+  document.getElementById('b-all').textContent = all.length;
+  document.getElementById('spin-area').style.display = 'none';
+  render(all);
 }
 
-function goArticleById(el) {
-  goArticle(el.dataset.id);
+async function doUpload() {
+  const btn=document.getElementById('upload-btn'), msg=document.getElementById('upload-msg');
+  const pw=document.getElementById('prog-wrap'), pb=document.getElementById('prog-bar'), pl=document.getElementById('prog-lbl');
+  btn.disabled=true; btn.textContent='⏳ 업로드 중...';
+  msg.className='upload-msg ing'; msg.textContent='최신 기사를 불러오는 중...';
+  pw.classList.add('show'); pb.style.width='0%';
+  all=[]; const counts={}; let total=0;
+  for(let i=0;i<TABS.length;i++){
+    const tab=TABS[i];
+    pl.textContent=`${tab.label} (${i+1}/${TABS.length})`;
+    pb.style.width=`${Math.round((i/TABS.length)*90)}%`;
+    try{
+      const rows=await fetchTab(tab);
+      rows.sort((a,b)=>(b.dc>a.dc?1:b.dc<a.dc?-1:0));
+      all=all.concat(rows); counts[tab.key]=rows.length; total+=rows.length;
+      document.getElementById('b-'+tab.key).textContent=rows.length;
+    }catch{counts[tab.key]=0;}
+  }
+  document.getElementById('b-all').textContent=total;
+  pb.style.width='100%'; pl.textContent='완료!';
+  btn.disabled=false; btn.textContent='🔄 기사 업로드 (원클릭)';
+  if(total>0){
+    msg.className='upload-msg ok';
+    msg.textContent=`✅ 완료! 총 ${total}건 — Kinder ${counts.kinder||0} · Kids ${counts.kids||0} · Junior ${counts.junior||0} · Times ${counts.times||0}`;
+  }else{
+    msg.className='upload-msg err';
+    msg.textContent='❌ 불러오기 실패.';
+  }
+  render(currentTab==='all'?all:all.filter(a=>a.media===currentTab));
 }
 
-function goIssue(issueId) {
-  prevPage = currentPage;
-  currentIssue = issueId;
-  document.querySelectorAll('.issue-btn').forEach(b => b.classList.toggle('active', b.dataset.id === issueId));
-  const info = issues.find(i => i.id === issueId) || {title: issueId, date: ''};
-  document.getElementById('issue-title').textContent = info.title;
-  document.getElementById('issue-date').textContent = info.date;
-  const list = articles.filter(a => a.issue === issueId);
-  document.getElementById('issue-list-grid').innerHTML = list.length
-    ? list.map(a =>
-        '<div class="issue-list-card" onclick="goArticleById(this)" data-id="' + a.id + '">' +
-        '<div class="issue-list-thumb">' + svgImg + '</div>' +
-        '<div class="issue-list-body"><p class="tag">' + (a.byline||'') + '</p><h4>' + a.title + '</h4></div>' +
-        '</div>'
-      ).join('')
-    : '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📰</div><p>기사를 등록해 주세요.</p></div>';
-  showPage('issue');
-}
-
-function goArticle(id) {
-  const a = articles.find(x => x.id === id);
-  if (!a) return;
-  prevPage = currentPage;
-  document.getElementById('detail-tag').textContent = a.issueLabel||'';
-  document.getElementById('detail-title').textContent = a.title;
-  document.getElementById('detail-byline').textContent = a.byline||'';
-  document.getElementById('detail-date').textContent = '발행일: ' + (a.date||'');
-  document.getElementById('detail-body').innerHTML = a.body||'';
-  const related = articles.filter(x => x.issue === a.issue && x.id !== id).slice(0, 4);
-  document.getElementById('related-articles').innerHTML = related.length
-    ? related.map(r =>
-        '<div onclick="goArticleById(this)" data-id="' + r.id + '" style="padding:8px 0;border-bottom:1px solid var(--light-gray);cursor:pointer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='inherit'">' +
-        '<p style="font-size:10px;color:var(--gray);margin-bottom:3px">' + (r.byline||'') + '</p>' +
-        '<p style="font-family:'Playfair Display',serif;font-size:13px;line-height:1.35">' + r.title + '</p></div>'
-      ).join('')
-    : '<p style="font-size:13px;color:var(--gray)">없음</p>';
-  document.getElementById('article-back-btn').textContent = prevPage === 'issue' ? '← 목록으로 돌아가기' : '← 메인으로 돌아가기';
-  renderDetailArchive();
-  showPage('article');
-}
-
-function goBack() {
-  if (prevPage === 'issue') goIssue(currentIssue); else goHome();
-}
-
-function switchGradeById(el) { switchGrade(el.dataset.grade); }
-function switchGrade(grade) {
-  currentGrade = grade;
-  document.querySelectorAll('.grade-tabs a').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + grade).classList.add('active');
-  const labels = {kinder:'Kinder Edition', kids:'Kids Edition', junior:'Junior Edition', times:'Times Edition'};
-  document.getElementById('edition-label').textContent = labels[grade];
-  goHome();
-}
-
-function switchYear(el) {
-  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+function switchTab(t,el){
+  currentTab=t; document.getElementById('q').value='';
+  document.querySelectorAll('.cat-tab').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
-  renderMonthGrid(el.dataset.year);
+  document.getElementById('sec-title').textContent=TAB_LABEL[t];
+  const arts=t==='all'?all:all.filter(a=>a.media===t);
+  document.getElementById('sec-count').textContent=`총 ${arts.length}건`;
+  render(arts);
+}
+function doSearch(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  if(!q){render(currentTab==='all'?all:all.filter(a=>a.media===currentTab));return;}
+  const res=all.filter(a=>[a.title,a.body,a.sec,a.lv].join(' ').toLowerCase().includes(q));
+  document.getElementById('sec-title').textContent=`"${document.getElementById('q').value}" 검색결과`;
+  document.getElementById('sec-count').textContent=`${res.length}건`;
+  render(res);
 }
 
-function renderMonthGrid(year) {
-  const mn = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const mwi = issues.filter(i => i.year === year).map(i => i.month);
-  document.getElementById('month-grid').innerHTML = mn.map((m, idx) => {
-    const month = idx + 1;
-    const issue = issues.find(i => i.year === year && i.month === month);
-    return '<button class="month-btn' + (mwi.includes(month) ? ' has-issue' : '') + '" ' +
-      (issue ? 'onclick="goIssueById(this)" data-id="' + issue.id + '"' : 'disabled') + '>' + m + '</button>';
-  }).join('');
+function render(arts){
+  document.getElementById('sec-count').textContent=`총 ${arts.length}건`;
+  const wrap=document.getElementById('page-wrap');
+  if(!arts.length){
+    wrap.innerHTML=`<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">기사가 없어요</div><div class="state-msg">이 카테고리에 기사가 없거나 아직 수집되지 않았어요.</div></div>`;
+    return;
+  }
+  const[main,...rest]=arts;
+  const sides=rest.slice(0,4), grid=rest.slice(4,10), list=rest.slice(10);
+  wrap.innerHTML=
+    `<div class="top-grid">${mkMain(main)}<div class="side-list">${sides.map(mkSide).join('')}</div></div>`+
+    (grid.length?`<div class="grid-wrap"><div class="grid-3">${grid.map(mkGrid).join('')}</div></div>`:'')+
+    (list.length?`<div class="list-wrap">${list.map(mkList).join('')}</div>`:'');
 }
 
-function renderDetailArchive() {
-  document.getElementById('detail-archive').innerHTML = issues.map(i =>
-    '<li onclick="goIssueById(this)" data-id="' + i.id + '"><span class="iss-num">' + i.label + '</span><span class="iss-date">' + i.date.replace('발행일: ', '') + '</span></li>'
-  ).join('') || '<li style="color:var(--gray)">등록된 호수 없음</li>';
+function badge(a){const c=MEDIA_CLS[a.media]||'',l=MEDIA_LBL[a.media]||'';return`<span class="mbadge ${c}">${l}</span>`;}
+function lv(a){return a.lv?`<span class="lvbadge">${a.lv}</span>`:'';}
+function imgOrPh(url,cls){
+  return url&&url.startsWith('http')
+    ?`<img class="${cls}" src="${url}" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=\\'${cls}-ph\\'>📷</div>'">`
+    :`<div class="${cls}-ph">📷</div>`;
 }
 
-async function init() {
-  document.getElementById('article-grid').innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>기사를 불러오는 중...</p></div>';
-  await loadArticles();
-  const archive = document.getElementById('sidebar-archive');
-  archive.innerHTML = issues.map(i =>
-    '<li onclick="goIssueById(this)" data-id="' + i.id + '"><span class="iss-num">' + i.label + '</span><span class="iss-date">' + i.date.replace('발행일: ', '') + '</span></li>'
-  ).join('') || '<li style="color:var(--gray)">등록된 호수 없음</li>';
-  const years = [...new Set(issues.map(i => i.year))].sort().reverse();
-  document.getElementById('year-tabs').innerHTML = years.map((y, idx) =>
-    '<button class="year-btn' + (idx===0?' active':'') + '" data-year="' + y + '" onclick="switchYear(this)">' + y + '년</button>'
-  ).join('') || '<span style="font-size:12px;color:var(--gray)">없음</span>';
-  if (years[0]) renderMonthGrid(years[0]);
-  goHome();
+function mkMain(a){
+  const idx=all.indexOf(a);
+  return`<div class="main-art" onclick="openArticle(${idx})">
+    ${imgOrPh(a.img,'main-img')}
+    <div class="main-badges">${badge(a)}${lv(a)}${a.sec?`<span style="font-size:11px;color:var(--muted)">${a.sec}</span>`:''}</div>
+    <div class="main-title">${a.title}</div>
+    <div class="main-body">${a.body||''}</div>
+    <div class="main-date">${a.date||''}</div>
+    <span class="read-link">기사 읽기 →</span>
+  </div>`;
+}
+function mkSide(a){
+  const idx=all.indexOf(a);
+  return`<div class="side-item" onclick="openArticle(${idx})">
+    ${imgOrPh(a.img,'side-thumb')}
+    <div><div class="side-title">${a.title}</div><div class="side-badges">${badge(a)}${lv(a)}<span class="side-date">${a.date||''}</span></div></div>
+  </div>`;
+}
+function mkGrid(a){
+  const idx=all.indexOf(a);
+  return`<div class="grid-item" onclick="openArticle(${idx})">
+    ${imgOrPh(a.img,'grid-img')}
+    <div class="grid-badges">${badge(a)}${lv(a)}</div>
+    <div class="grid-title">${a.title}</div>
+    <div class="grid-body">${a.body||''}</div>
+    <div class="grid-date">${a.date||''}</div>
+  </div>`;
+}
+function mkList(a){
+  const idx=all.indexOf(a);
+  return`<div class="list-item" onclick="openArticle(${idx})">
+    ${imgOrPh(a.img,'list-thumb')}
+    <div><div class="list-title">${a.title}</div><div class="list-body">${a.body||''}</div><div class="list-badges">${badge(a)}${lv(a)}<span class="list-date">${a.date||''}</span></div></div>
+  </div>`;
 }
 
-init();
-
+loadAll();
 </script>
 </body>
 </html>
